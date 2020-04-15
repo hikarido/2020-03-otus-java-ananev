@@ -1,6 +1,7 @@
 plugins {
     // Apply the java plugin to add support for Java
     id 'java'
+    id 'idea' apply true
     id 'com.github.johnrengelman.shadow'
     id 'application'
 }
@@ -34,3 +35,7 @@ shadowJar {
 }
 
 tasks.build.dependsOn tasks.shadowJar
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '6.3'
+}
