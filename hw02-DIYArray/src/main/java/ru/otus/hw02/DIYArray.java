@@ -66,12 +66,12 @@ public class DIYArray<Value> implements Collection<Value>{
 			int position = 0;
 			@Override
 			public boolean hasNext() {
-				return position + 1 >= size ? false: true;
+				return position >= size ? false: true;
 			}
 
 			@Override
 			public Value next() {
-				if(position + 1 > size){
+				if(position >= size){
 					throw new NoSuchElementException("end of array was reached");
 				}
 
