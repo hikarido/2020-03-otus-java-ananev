@@ -3,7 +3,7 @@ package ru.otus.hw02;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class DIYArray<Value> implements Collection<Value>{
+public class DIYArray<Value> implements List<Value>{
 	/**
 	 * Creates empty array
 	 * Required by Collection java doc
@@ -128,28 +128,27 @@ public class DIYArray<Value> implements Collection<Value>{
 	}
 
 	@Override
-	public boolean containsAll(Collection<?> c) {
-		throw new UnsupportedOperationException();
+	public ListIterator<Value> listIterator() {
+		// TODO implemet it
+		return null;
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends Value> c) {
-		throw new UnsupportedOperationException();
+	public ListIterator<Value> listIterator(int index) {
+		// TODO implemet it
+		return null;
 	}
 
 	@Override
-	public boolean removeAll(Collection<?> c) {
-		throw new UnsupportedOperationException();
+	public Value get(int index) {
+		// TODO implemet it
+		return null;
 	}
 
 	@Override
-	public boolean retainAll(Collection<?> c) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void clear() {
-		throw new UnsupportedOperationException();
+	public Value set(int index, Value element) {
+		// TODO implemet it
+		return null;
 	}
 
 	@Override
@@ -171,6 +170,63 @@ public class DIYArray<Value> implements Collection<Value>{
 		return bld.toString();
 	}
 
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends Value> c) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean addAll(int index, Collection<? extends Value> c) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> c) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void clear() {
+		throw new UnsupportedOperationException();
+	}
+
+
+	@Override
+	public void add(int index, Value element) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Value remove(int index) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int indexOf(Object o) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int lastIndexOf(Object o) {
+		throw new UnsupportedOperationException();
+	}
+
+
+	@Override
+	public List<Value> subList(int fromIndex, int toIndex) {
+		throw new UnsupportedOperationException();
+	}
+
 	private void removeByIndexWithLeftShift(int index){
 		if(size == capacity){
 			size -= 1;
@@ -180,7 +236,6 @@ public class DIYArray<Value> implements Collection<Value>{
 		System.arraycopy(data, index + 1, data, index, size - index);
 		size -= 1;
 	}
-
 
 	@SuppressWarnings("unchecked")
 	private Value[] grow(){
