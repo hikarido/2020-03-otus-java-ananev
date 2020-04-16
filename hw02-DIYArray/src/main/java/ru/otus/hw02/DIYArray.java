@@ -1,8 +1,20 @@
 package ru.otus.hw02;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
+/**
+ * DIYArray is resizable-array implementation of java.util.List interface.
+ * Implementation of java.util.List is partial this means implementation
+ * is enough to perform java.util.Collections {sort, copy, addAll}.
+ *
+ * Implementation is based at backing Object[]. Every time when user requires
+ * add new element implementation checks memory usage. If backed array is full
+ * DIYArray doubles its capacity. {@see getCapacity, size}.
+ *
+ * Collection isn't ordered and isn't sorted. Collection is mutable.
+ *
+ * @param <Value> is any reference type. Null is not forbidden
+ */
 public class DIYArray<Value> implements List<Value>{
 	/**
 	 * Creates empty array
@@ -62,24 +74,7 @@ public class DIYArray<Value> implements List<Value>{
 	@Override
 	@SuppressWarnings("unchecked")
 	public Iterator<Value> iterator() {
-		return new Iterator<Value>() {
-			int position = 0;
-			@Override
-			public boolean hasNext() {
-				return isIndexInBound(position);
-			}
-
-			@Override
-			public Value next() {
-				if(!isIndexInBound(position)){
-					throw new NoSuchElementException("end of array was reached");
-				}
-
-				Value v = (Value) data[position];
-				position += 1;
-				return v;
-			}
-		};
+		return new DIYIter();
 	}
 
 	@Override
@@ -129,14 +124,12 @@ public class DIYArray<Value> implements List<Value>{
 
 	@Override
 	public ListIterator<Value> listIterator() {
-		// TODO implemet it
-		return null;
+		return new DIYListIterator<>();
 	}
 
 	@Override
 	public ListIterator<Value> listIterator(int index) {
-		// TODO implemet it
-		return null;
+		return new DIYListIterator<>(index);
 	}
 
 	@Override
@@ -237,7 +230,7 @@ public class DIYArray<Value> implements List<Value>{
 	}
 
 	private boolean isIndexInBound(int index){
-		if(index >= 0 && index < size){
+		if(index >= 0 && index < size()){
 			return true;
 		}
 
@@ -256,7 +249,7 @@ public class DIYArray<Value> implements List<Value>{
 
 	@SuppressWarnings("unchecked")
 	private Value[] grow(){
-		capacity *= 2;
+		capacity *= GROW_FACTOR;
 		return  (Value[]) Arrays.copyOf(data, capacity);
 	}
 
@@ -264,8 +257,110 @@ public class DIYArray<Value> implements List<Value>{
 		return new Object[size];
 	}
 
+	private class DIYIter<E> implements Iterator<E> {
+
+		public DIYIter(){
+			position = 0;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return isIndexInBound(position);
+		}
+
+		@Override
+		public E next() {
+			if(!isIndexInBound(position)){
+				throw new NoSuchElementException("end of array was reached");
+			}
+
+			E v = (E) data[position];
+			position += 1;
+			return v;
+		}
+
+		protected int getPosition() {
+			return position;
+		}
+
+		protected void setPosition(int position) {
+			this.position = position;
+		}
+
+		private int position;
+	}
+
+	private class DIYListIterator<E> extends DIYIter<E> implements ListIterator<E>{
+		public DIYListIterator(){
+			super();
+		}
+
+		public DIYListIterator(int index){
+			super();
+			setPosition(index);
+		}
+
+		@Override
+		public boolean hasPrevious() {
+			if(!isEmpty() & getPosition() != 0){
+				return true;
+			}
+
+			return false;
+		}
+
+		@Override
+		public E previous() {
+			if(hasPrevious()){
+				throw new NoSuchElementException();
+			}
+
+			if(getPosition() >= size()){
+				setPosition(size() - 1);
+			}
+
+			E val = (E) data[getPosition()];
+			lastReturnedPosition = getPosition();
+			setPosition(getPosition() - 1);
+			return val;
+		}
+
+		@Override
+		public E next(){
+			E val = super.next();
+			lastReturnedPosition = getPosition() - 1;
+			return val;
+		}
+
+		@Override
+		public int nextIndex() {
+			return getPosition() + 1;
+		}
+
+		@Override
+		public int previousIndex() {
+			return getPosition() - 1;
+		}
+
+		@Override
+		public void set(E e){
+			data[lastReturnedPosition] = e;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void add(E e) {
+			throw new UnsupportedOperationException();
+		}
+	}
+	private int lastReturnedPosition;
 	private Object[] data;
 	private int size = 0;
 	private int capacity = 0;
 	private static int INIT_CAPACITY = 10;
+	private static int GROW_FACTOR = 2;
 }
