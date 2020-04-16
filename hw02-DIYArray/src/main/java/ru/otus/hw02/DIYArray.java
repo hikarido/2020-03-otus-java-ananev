@@ -66,12 +66,12 @@ public class DIYArray<Value> implements List<Value>{
 			int position = 0;
 			@Override
 			public boolean hasNext() {
-				return position >= size ? false: true;
+				return isIndexInBound(position);
 			}
 
 			@Override
 			public Value next() {
-				if(position >= size){
+				if(!isIndexInBound(position)){
 					throw new NoSuchElementException("end of array was reached");
 				}
 
@@ -141,14 +141,23 @@ public class DIYArray<Value> implements List<Value>{
 
 	@Override
 	public Value get(int index) {
-		// TODO implemet it
-		return null;
+		if(isIndexInBound(index)){
+			return (Value) data[index];
+		}
+
+		throw new ArrayIndexOutOfBoundsException("Size: " + size + ". Index: " + index);
 	}
 
 	@Override
 	public Value set(int index, Value element) {
-		// TODO implemet it
-		return null;
+		if(isIndexInBound(index)){
+			Value old = (Value) data[index];
+			data[index] = element;
+			return old;
+
+		}
+
+		throw new ArrayIndexOutOfBoundsException("Size: " + size + ". Index: " + index);
 	}
 
 	@Override
@@ -225,6 +234,14 @@ public class DIYArray<Value> implements List<Value>{
 	@Override
 	public List<Value> subList(int fromIndex, int toIndex) {
 		throw new UnsupportedOperationException();
+	}
+
+	private boolean isIndexInBound(int index){
+		if(index >= 0 && index < size){
+			return true;
+		}
+
+		return false;
 	}
 
 	private void removeByIndexWithLeftShift(int index){
