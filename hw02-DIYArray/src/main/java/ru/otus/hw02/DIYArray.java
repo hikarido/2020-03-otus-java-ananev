@@ -363,4 +363,8 @@ public class DIYArray<Value> implements List<Value>{
 	private int capacity = 0;
 	private static int INIT_CAPACITY = 10;
 	private static int GROW_FACTOR = 2;
+
+	public static void main(String[] args) {
+		System.out.println("DIY array");
+	}
 }
