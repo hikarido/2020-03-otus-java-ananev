@@ -6,5 +6,6 @@
 
 ---
 # Content
-* [HW 01](./hw01-gradle) - create gradle repo with submodules
-* [HW 02](./hw02-DIYArray) - custom data structure implementation
+* [HW 01](./hw01-gradle) - create gradle repo with submodules (Build lesson)
+* [HW 02](./hw02-DIYArray) - custom data structure implementation (Generics lesson)
+* [HW 03](./hw3-own-test-framework) - simple test framework (Reflection lesson)
