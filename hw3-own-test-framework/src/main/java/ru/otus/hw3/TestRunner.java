@@ -5,4 +5,7 @@ package ru.otus.hw3;
  * And executes them
  */
 public class TestRunner {
+    public TestRunner(String path){
+
+    }
 }
