@@ -11,7 +11,7 @@ import ru.otus.hw3.TestRunner;
 public class ConsoleLauncher {
     public static void main(String[] args) {
         Options cliOptions = new Options();
-        cliOptions.addRequiredOption("i", "input-test-path", true, "Path to file which contains test");
+        cliOptions.addRequiredOption("i", "input-test-class", true, "Name of class which contains tests");
 
         HelpFormatter help = new HelpFormatter();
 
@@ -19,11 +19,11 @@ public class ConsoleLauncher {
 
         try{
             CommandLine cli = parser.parse(cliOptions, args);
-            String pathToTest = cli.getOptionValue("i");
-            new TestRunner(pathToTest);
+            String className = cli.getOptionValue("i");
+            new TestRunner(className);
         }
         catch (ParseException e){
-            help.printHelp("Runs all tests which presents in file passed as -i arg", cliOptions);
+            help.printHelp("Runs all tests which present in file passed as -i arg", cliOptions);
         }
     }
 }
