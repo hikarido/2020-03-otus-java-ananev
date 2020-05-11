@@ -4,15 +4,14 @@ import java.lang.Class;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+
 import ru.otus.hw3.annotations.*;
+import ru.otus.hw3.assertions.AssertionBaseException;
 
 /**
  * Explores one class on presence of tests
@@ -108,36 +107,64 @@ public class TestRunner {
         }
     }
 
-    private Statistic runOrderedTestSequence(
+    private void runOrderedTestSequence(
             Object instance,
             List<Method> beforeMethods,
             List<Method> testMethods,
             List<Method> afterMethods,
             List<Method> lastTestMethods
     ){
-        Map<String, List<Method>> categories = new HashMap<>(4);
+        Map<String, List<Method>> categories = new LinkedHashMap<>(4);
         categories.put("before", beforeMethods);
         categories.put("test", testMethods);
         categories.put("after", afterMethods);
         categories.put("last", lastTestMethods);
-        Statistic stats = new Statistic();
 
-        for(Map.Entry<String, List<Method>> category: categories.entrySet()){
-            logger.log(Level.INFO, category.getKey());
-            for(Method method: category.getValue()){
-                try {
-                    method.invoke(instance);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+        Statistic beforeStatistic;
+        Statistic testStatistic;
+        Statistic afterStatistic;
+        Statistic lastStatistic;
+
+        try {
+            for(Method method: categories.get("test")){
+                testStatistic = new Statistic(method.getName());
+                beforeStatistic = invokeCategory("before", categories.get("before"), instance);
+                invokeOne(method, instance, testStatistic);
+                afterStatistic = invokeCategory("after", categories.get("after"), instance);
+
+                logger.log(Level.INFO, beforeStatistic.toString());
+                logger.log(Level.INFO, testStatistic.toString());
+                logger.log(Level.INFO, afterStatistic.toString());
             }
+
+            lastStatistic = invokeCategory("last", categories.get("last"), instance);
+            logger.log(Level.INFO, lastStatistic.toString());
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("Can't run method: ", e);
+        }
+    }
+
+    private Statistic invokeCategory(String category, List<Method> methods, Object instance)
+            throws IllegalAccessException, InvocationTargetException{
+        Statistic stats = new Statistic(category);
+
+        for(Method method: methods){
+            invokeOne(method, instance, stats);
         }
 
         return stats;
     }
 
+    private void invokeOne(Method method, Object instance, Statistic statistic)
+            throws  InvocationTargetException , IllegalAccessException{
+        try{
+            method.invoke(instance);
+            statistic.addSuccess(method.getName());
+        }
+        catch (AssertionBaseException e){
+            statistic.addFault(method.getName(), e);
+        }
+    }
 }
 
 
