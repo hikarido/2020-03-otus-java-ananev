@@ -9,51 +9,51 @@ public class BoringRocketScienceBusinessLogicTest {
     int testCount;
 
     @Before
-    void initTestCount(){
+    public void initTestCount(){
         testCount = 0;
     }
 
     @Before
-    void loadDataset(){
+    public void loadDataset(){
         dataset = new int[1000];
     }
 
     @Before
-    void preprocessDataSet(){
+    public void preprocessDataSet(){
         for (int i = 0; i < dataset.length; i++){
             dataset[i] = i;
         }
     }
 
     @Before
-    void loadNetwork(){
+    public void loadNetwork(){
         net = new Network();
     }
 
     @Test
-    void trainNetworkInRightEnvironment(){
+    public void trainNetworkInRightEnvironment(){
         testCount += 1;
         Assertions.assertTrue(net.trainOk());
     }
 
     @Test
-    void trainNetworkBadEnvironment(){
+    public void trainNetworkBadEnvironment(){
         testCount += 1;
         Assertions.assertTrue(net.trainBad());
     }
 
     @LastTest
-    void countMustBeTwo(){
+    public void countMustBeTwo(){
         Assertions.assertTrue(testCount == 2);
     }
 
     @After
-    void releaseDataset(){
+    public void releaseDataset(){
         dataset = null;
     }
 
     @After
-    void releaseNetworkResources(){
+    public void releaseNetworkResources(){
         net.release();
     }
 }
