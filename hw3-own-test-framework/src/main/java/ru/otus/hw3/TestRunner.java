@@ -19,9 +19,10 @@ import ru.otus.hw3.assertions.AssertionBaseException;
  */
 public class TestRunner {
 
-    private final Logger logger = Logger.getLogger(this.getClass().getCanonicalName());
+    private final Logger logger;
 
     public TestRunner(String name){
+        logger = Logger.getLogger(this.getClass().getCanonicalName());
         Class<?> inspectingClazz = loadClassDescriptorByName(name);
         List<Method> testMethods = new ArrayList<>();
         List<Method> beforeMethods = new ArrayList<>();
@@ -126,19 +127,20 @@ public class TestRunner {
         Statistic lastStatistic;
 
         try {
+            String logFtm = "\n%s";
             for(Method method: categories.get("test")){
                 testStatistic = new Statistic(method.getName());
                 beforeStatistic = invokeCategory("before", categories.get("before"), instance);
                 invokeOne(method, instance, testStatistic);
                 afterStatistic = invokeCategory("after", categories.get("after"), instance);
 
-                logger.log(Level.INFO, beforeStatistic.toString());
-                logger.log(Level.INFO, testStatistic.toString());
-                logger.log(Level.INFO, afterStatistic.toString());
+                logger.log(Level.INFO, String.format(logFtm, beforeStatistic.toString()));
+                logger.log(Level.INFO, String.format(logFtm, testStatistic.toString()));
+                logger.log(Level.INFO, String.format(logFtm, afterStatistic.toString()));
             }
 
             lastStatistic = invokeCategory("last", categories.get("last"), instance);
-            logger.log(Level.INFO, lastStatistic.toString());
+            logger.log(Level.INFO, String.format(logFtm, lastStatistic.toString()));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Can't run method: ", e);
         }
@@ -161,8 +163,12 @@ public class TestRunner {
             method.invoke(instance);
             statistic.addSuccess(method.getName());
         }
-        catch (AssertionBaseException e){
-            statistic.addFault(method.getName(), e);
+        catch (InvocationTargetException e){
+            if(e.getCause() instanceof AssertionBaseException){
+                statistic.addFault(method.getName(), e.getCause());
+            }else {
+                throw e;
+            }
         }
     }
 }

@@ -24,7 +24,8 @@ public class Statistic {
     @Override
     public String toString(){
         StringBuilder report = new StringBuilder();
-        report.append(category);
+        report.append("CATEGORY: " + category);
+        report.append("\n");
         for(InvocationResult result: results){
             report.append(result.toString());
             report.append("\n");
