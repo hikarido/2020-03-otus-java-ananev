@@ -21,6 +21,18 @@ public class Statistic {
         results.add(new InvocationResult(methodName, RESULT.FAIL, cause));
     }
 
+    public long getSuccessCount(){
+        return results.stream().
+                filter(x -> x.isSuccess())
+                .count();
+    }
+
+    public long getFailedCount(){
+        return results.stream()
+                .filter(x -> x.isFailed())
+                .count();
+    }
+
     @Override
     public String toString(){
         StringBuilder report = new StringBuilder();
@@ -59,6 +71,14 @@ public class Statistic {
             }
 
             return msg;
+        }
+
+        public boolean isSuccess(){
+            return invocationResult == RESULT.SUCCESS;
+        }
+
+        public boolean isFailed(){
+            return invocationResult == RESULT.FAIL;
         }
 
         public Throwable faultCause;

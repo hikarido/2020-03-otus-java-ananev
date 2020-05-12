@@ -5,7 +5,6 @@ public class BoringRocketScienceBusinessLogicTest {
 
     int[] dataset;
     Network net;
-
     int testCount;
 
     @Before
@@ -43,8 +42,8 @@ public class BoringRocketScienceBusinessLogicTest {
     }
 
     @LastTest
-    public void countMustBeTwo(){
-        Assertions.assertTrue(testCount == 2);
+    public void countMustBeOne(){
+        Assertions.assertTrue(testCount == 1);
     }
 
     @After
@@ -55,6 +54,11 @@ public class BoringRocketScienceBusinessLogicTest {
     @After
     public void releaseNetworkResources(){
         net.release();
+    }
+
+    @Test
+    public void synteticFailTest(){
+        Assertions.assertTrue(false);
     }
 }
 

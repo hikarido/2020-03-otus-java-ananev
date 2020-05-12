@@ -37,8 +37,36 @@ public class TestRunner {
             }
 
             Object test = instantiateClass(inspectingClazz);
-            runOrderedTestSequence(test, beforeMethods, testMethods, afterMethods, lastTest);
+            List<Statistic> testsResults = runOrderedTestSequence(
+                    test, beforeMethods, testMethods, afterMethods, lastTest
+            );
+
+            displaySummary(calcTestingSummary(testsResults));
+
+
         }
+    }
+
+    private void displaySummary(Map<String, Integer> summary) {
+        String ftm = "\nSummary\nall: %s, success: %s fail: %s";
+        logger.log(Level.INFO, String.format(ftm, summary.get("tests"), summary.get("success"), summary.get("fail")));
+    }
+
+    private Map<String, Integer> calcTestingSummary(List<Statistic> testsResults) {
+        int allCount = 0;
+        int successCount = 0;
+        int failedCount = 0;
+        for(Statistic stat: testsResults){
+            successCount += stat.getSuccessCount();
+            failedCount += stat.getFailedCount();
+        }
+        allCount += successCount + failedCount;
+
+        Map<String, Integer> summary = new HashMap<>(3);
+        summary.put("tests", allCount);
+        summary.put("success", successCount);
+        summary.put("fail", failedCount);
+        return summary;
     }
 
     private Object instantiateClass(Class<?> inspectingClazz) {
@@ -108,7 +136,7 @@ public class TestRunner {
         }
     }
 
-    private void runOrderedTestSequence(
+    private List<Statistic> runOrderedTestSequence(
             Object instance,
             List<Method> beforeMethods,
             List<Method> testMethods,
@@ -126,12 +154,15 @@ public class TestRunner {
         Statistic afterStatistic;
         Statistic lastStatistic;
 
+        List<Statistic> wholeTestsStatistics = new ArrayList<>(testMethods.size());
+
         try {
             String logFtm = "\n%s";
             for(Method method: categories.get("test")){
                 testStatistic = new Statistic(method.getName());
                 beforeStatistic = invokeCategory("before", categories.get("before"), instance);
                 invokeOne(method, instance, testStatistic);
+                wholeTestsStatistics.add(testStatistic);
                 afterStatistic = invokeCategory("after", categories.get("after"), instance);
 
                 logger.log(Level.INFO, String.format(logFtm, beforeStatistic.toString()));
@@ -144,6 +175,8 @@ public class TestRunner {
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Can't run method: ", e);
         }
+
+        return wholeTestsStatistics;
     }
 
     private Statistic invokeCategory(String category, List<Method> methods, Object instance)
