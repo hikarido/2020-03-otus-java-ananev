@@ -9,38 +9,16 @@ import javax.management.openmbean.CompositeData;
 import java.lang.management.GarbageCollectorMXBean;
 import com.sun.management.GarbageCollectionNotificationInfo;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class MemoryEater {
     public static void main(String[] args) {
-        MemoryEater.switchOnMonitoring();
+        GCStatistic statistic = new GCStatistic();
+        statistic.switchOnMonitoring();
         Worker obj = new Worker();
         obj.run();
     }
 
-    private static void switchOnMonitoring() {
-        List<GarbageCollectorMXBean> gcbeans = java.lang.management.ManagementFactory.getGarbageCollectorMXBeans();
-        for (GarbageCollectorMXBean gcbean : gcbeans) {
-            System.out.println("GC name:" + gcbean.getName());
-            NotificationEmitter emitter = (NotificationEmitter) gcbean;
-            NotificationListener listener = (notification, handback) -> {
-                if (notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION)) {
-                    GarbageCollectionNotificationInfo info = GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
-                    String gcName = info.getGcName();
-                    String gcAction = info.getGcAction();
-                    String gcCause = info.getGcCause();
-                    long startTime = info.getGcInfo().getStartTime();
-                    long duration = info.getGcInfo().getDuration();
-                    System.out.println("start:" + startTime + " Name:" + gcName + ", action:" + gcAction + ", gcCause:" + gcCause + "(" + duration + " ms)");
-                }
-            };
-
-            emitter.addNotificationListener(listener, null, null);
-        }
-    }
 
 }
 
@@ -48,7 +26,7 @@ class Worker{
     private Deque<Image> images = new ArrayDeque<>();
     void run(){
         for(long i = 0; true; i++){
-            images.add(new Image(1000, 1000));
+            images.add(new Image(100, 100));
             if(i % 1000 == 0){
                 images.removeFirst();
             }
@@ -72,3 +50,63 @@ class Image{
     private int channelCount = 3;
 }
 
+class GCStatistic{
+
+    public GCStatistic(){
+       startTime = System.currentTimeMillis();
+       metrics = new HashMap<>();
+    }
+
+    public void switchOnMonitoring() {
+        List<GarbageCollectorMXBean> gcbeans = java.lang.management.ManagementFactory.getGarbageCollectorMXBeans();
+        for (GarbageCollectorMXBean gcbean : gcbeans) {
+            System.out.println("GC name:" + gcbean.getName());
+            NotificationEmitter emitter = (NotificationEmitter) gcbean;
+            NotificationListener listener = (notification, handback) -> {
+                if (notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION)) {
+                    GarbageCollectionNotificationInfo info = GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
+                    String gcName = info.getGcName();
+                    String gcAction = info.getGcAction();
+                    String gcCause = info.getGcCause();
+
+                    long duration = info.getGcInfo().getDuration();
+                    updateMetric(gcName, duration);
+
+                    endTime = System.currentTimeMillis();
+                    long upTime = endTime - startTime;
+                    System.out.printf("%s, %s\n", gcAction, gcCause);
+                    System.out.println(String.format(
+                            "Up time %d ms, Collector %s\nStats: \n%s\n", upTime, gcName, this.toString())
+                    );
+                }
+            };
+
+            emitter.addNotificationListener(listener, null, null);
+        }
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder buffer = new StringBuilder();
+        for(Map.Entry<String, Integer> entry: metrics.entrySet()){
+            buffer.append(entry.getKey() + " = " + entry.getValue() + "\n");
+        }
+        return buffer.toString();
+    }
+
+    private void updateMetric(String name, long value){
+        int time = metrics.getOrDefault(name, 1);
+        time += value;
+        metrics.put(name, time);
+
+        String countMetricKey = name + "Count";
+        int count = metrics.getOrDefault( countMetricKey, 1);
+        count += 1;
+        metrics.put(countMetricKey, count);
+    }
+
+    private long startTime = 0;
+    private long endTime = 0;
+
+    Map<String, Integer> metrics;
+}
