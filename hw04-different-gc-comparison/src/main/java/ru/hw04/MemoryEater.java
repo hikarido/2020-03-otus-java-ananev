@@ -26,9 +26,14 @@ class Worker{
     private Deque<Image> images = new ArrayDeque<>();
     void run(){
         for(long i = 0; true; i++){
-            images.add(new Image(100, 100));
-            if(i % 1000 == 0){
+            images.add(new Image(1, 1));
+            if(i % 500 == 0){
                 images.removeFirst();
+                try {
+                    Thread.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
