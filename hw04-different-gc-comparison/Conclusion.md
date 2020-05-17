@@ -68,3 +68,17 @@ little bit shorter. Collection time grows more smooth from 60ms till 6100 ms. Up
 * +UseConcMarkSweepGC - First parallel GC which fell with OOM. Before OOM can do pause length till 20 sec.
 * +UseG1GC - Old generation not presences long time. Only when app has reached 8GB memory usage old generation appears.
 And then app fell with OOM.
+
+# Conclusions
+Mostly based on [documentation](https://www.oracle.com/technetwork/java/javase/tech/memorymanagement-whitepaper-1-150020.pdf) 
+and [habr](https://habr.com/ru/post/269621/)
+* SerialGC - for old system and weak client system(Tetris game on tetris hardware?)
+* ParallelGC - appropriate for strong servers for batch data processing(Reports processing?)
+* ParallelOldGC - appropriate for pause time restricted application (Video processing?)
+* ConcMarkSweepGC - appropriate for application which has no time pause restriction, run on many sockets system and 
+store many long living objects.(Web server?). But my Idea instance uses this GC type.
+* G1GC - Apps which has a large heap. Heap size must be more than 6G and pauses at most 0.5 sec are permitted. 
+Throughout testing, I came to conclusion that G1 can be used when many young objects are create. (Big data?)
+
+# PS
+Manuals told us - tune GC only when it is need and remember about ergonomics.
