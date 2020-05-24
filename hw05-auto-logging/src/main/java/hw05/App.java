@@ -3,25 +3,35 @@
  */
 package hw05;
 
-import jdk.jfr.FlightRecorder;
+import hw05.AutoLogBuilder.AOPLoggingBuilder;
 
 import java.util.Arrays;
 
+/**
+ * Runs silent - no log version
+ * And proxies - log version
+ */
 public class App {
 
     public static void main(String[] args) {
-        Flying airplan = new Airplain();
+        Flying airplan = new Airplane();
+        // no log
         airplan.startFlight(Arrays.asList("Spb", "Moscow", "Bali", "Java"));
         airplan.endFlight("success");
         airplan.canBeNonLoggable("absent");
+        airplan.equals(null);
 
+        //with log
         Flying an2 = AOPLoggingBuilder.build(airplan, Flying.class);
-
         an2.startFlight(Arrays.asList("Spb", "Moscow", "Bali", "Java"));
         an2.endFlight("Ok");
         an2.canBeNonLoggable("Void");
+        an2.equals(null);
 
-
-
+        //no log after proxy
+        airplan.startFlight(Arrays.asList("Spb", "Moscow", "Bali", "Java"));
+        airplan.endFlight("success");
+        airplan.canBeNonLoggable("absent");
+        airplan.equals(null);
     }
 }
