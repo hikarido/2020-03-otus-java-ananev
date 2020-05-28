@@ -7,10 +7,4 @@
  * in the user manual at https://docs.gradle.org/6.3/userguide/multi_project_builds.html
  */
 
-rootProject.name = '2020-03-otus-java-ananev'
-include 'hw01-gradle'
-include 'hw02-DIYArray'
-include 'hw3-own-test-framework'
-//include 'hw04-different-gc-comparison' //commented out bacause it is experiment. It should be ran manually. 
-include 'hw05-auto-logging'
-include 'hw06-atm-single'
+rootProject.name = 'hw06-atm-single'
