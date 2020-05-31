@@ -6,7 +6,7 @@ package hw06.atm.single;
  *     * init amount in it
  *     * maximum capacity
  */
-interface Cell {
+public interface Cell {
     int get(int amount);
     void add(int amount);
     CellInfo getCellInfo();
