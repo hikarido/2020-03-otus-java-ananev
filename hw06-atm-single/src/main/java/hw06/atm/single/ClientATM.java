@@ -1,5 +1,9 @@
 package hw06.atm.single;
 
+import hw06.atm.single.exceptions.CantExtractRequiredAmount;
+import hw06.atm.single.exceptions.SpaceInCellsIsNotEnough;
+import hw06.atm.single.exceptions.ThereIsNoAppropriateDenominationCell;
+
 import java.util.List;
 
 /**
@@ -10,9 +14,9 @@ import java.util.List;
  * If you ATM user you can see residual(getBalance), add(replenish), and get(withdraw) money.
  */
 public interface ClientATM{
-    void replenish(List<Denomination> money);
-    List<Denomination> withdraw(int sum);
-    String getBalance();
+    void replenish(List<Denomination> money) throws ThereIsNoAppropriateDenominationCell, SpaceInCellsIsNotEnough;
+    List<Denomination> withdraw(int sum) throws CantExtractRequiredAmount;
+    int getBalance();
 
 }
 

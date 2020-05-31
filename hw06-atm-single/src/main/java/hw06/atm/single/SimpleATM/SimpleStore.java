@@ -1,6 +1,7 @@
 package hw06.atm.single.SimpleATM;
 
 import hw06.atm.single.*;
+import hw06.atm.single.exceptions.CantExtractRequiredAmount;
 import hw06.atm.single.exceptions.SpaceInCellsIsNotEnough;
 import hw06.atm.single.exceptions.ThereIsNoAppropriateDenominationCell;
 
@@ -23,8 +24,7 @@ public class SimpleStore implements Store {
 
     public SimpleStore(){
         init(Arrays.asList(
-                new SimpleCell(Denomination.FIVE, 1000, 1000),
-                new SimpleCell(Denomination.HUNDRED, 1000, 1000),
+                new SimpleCell(Denomination.ONE, 1000, 1000),
                 new SimpleCell(Denomination.THOUSAND, 1000, 1000)
         ));
     }
@@ -58,8 +58,17 @@ public class SimpleStore implements Store {
     }
 
     @Override
-    public List<Denomination> get(MoneyExtractStrategy extractWay) {
-        return null;
+    public List<Denomination> get(int sum, MoneyExtractStrategy extractWay) throws CantExtractRequiredAmount {
+        if(sum <= 0){
+            throw new IllegalArgumentException("Required sum must be greater then zero");
+        }
+
+        if(extractWay == null){
+            extractWay = new SimplePoolingStrategy();
+        }
+
+        List<Denomination> money = extractWay.extract(new ArrayList<>(cells.values()), sum);
+        return money;
     }
 
     @Override
@@ -111,7 +120,7 @@ public class SimpleStore implements Store {
             int availableSpaceForDenomination = appropriateCells
                     .stream()
                     .map(Cell::getCellInfo)
-                    .mapToInt(CellInfo::getSize)
+                    .mapToInt(c ->c.getCapacity() - c.getSize())
                     .sum();
 
             if(availableSpaceForDenomination < amount){

@@ -35,7 +35,7 @@ public class SimpleStoreInfo implements StoreInfo {
     public String toString(){
         StringBuilder b = new StringBuilder();
         for(Map.Entry<Integer, Cell> cellData: cells.entrySet()){
-            String cellDescription = cellData.getValue().toString();
+            String cellDescription = cellData.getValue().getCellInfo().toString();
             Integer cellId = cellData.getKey();
             b.append("Cell: " + cellId + " " + cellDescription + "\n");
         }
