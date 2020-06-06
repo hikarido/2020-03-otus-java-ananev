@@ -45,22 +45,3 @@ public class SimpleStoreInfo implements StoreInfo {
 
     private Map<Integer, Cell> cells;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

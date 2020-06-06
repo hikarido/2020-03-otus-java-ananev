@@ -13,10 +13,11 @@ import java.util.List;
  *
  * If you ATM user you can see residual(getBalance), add(replenish), and get(withdraw) money.
  */
-public interface ClientATM{
+public interface ClientATM {
     void replenish(List<Denomination> money) throws ThereIsNoAppropriateDenominationCell, SpaceInCellsIsNotEnough;
+
     List<Denomination> withdraw(int sum) throws CantExtractRequiredAmount;
+
     int getBalance();
 
 }
-

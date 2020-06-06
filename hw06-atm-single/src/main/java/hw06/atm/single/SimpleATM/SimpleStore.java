@@ -146,23 +146,3 @@ public class SimpleStore implements Store {
     private Map<Integer, Cell> cells;
     private int lastCellId;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
