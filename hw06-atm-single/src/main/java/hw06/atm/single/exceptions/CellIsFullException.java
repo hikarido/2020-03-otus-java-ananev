@@ -5,7 +5,7 @@ import hw06.atm.single.Cell;
 /**
  * You can't add money to cell which is full
  */
-public class CellIsFullException extends RuntimeException {
+public class CellIsFullException extends ATMException {
 
     public CellIsFullException(){
         super("Cell is full");
