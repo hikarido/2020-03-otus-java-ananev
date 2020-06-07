@@ -12,3 +12,4 @@
 * [HW 04](./hw04-different-gc-comparison) - studying docs of garbage collectors and testing them on simple app. Make concluson about GC usage(GC lesson)
 * [HW 05](./hw05-auto-logging) - Make your class auto logable by magic proxy (AMS, AutoProxy, class loader lesson)
 * [HW 06](./hw06-atm-single) - Apply SOLID principles. Design your ATM emulator architecture (SOLID, Coupling, Cohesion lesson)
+* [HW 08](./hw08-json-object-writer) - First look at json ecosystem (GSON, javax.json and custom toGson, serialization Lesson)
