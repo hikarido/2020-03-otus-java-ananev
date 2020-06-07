@@ -3,6 +3,7 @@
  */
 package hw08.mygson;
 
+import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -10,30 +11,35 @@ import com.google.gson.Gson;
 
 
 public class MyGsonTest {
-    @Test public void testNull() {
+    @Test
+    public void testNull() {
         assertEquals("{}", MyGson.toJson(null));
     }
 
-    @Test public void testObjectSimple(){
+    @Test
+    public void testObjectSimple() {
         assertEquals("{}", MyGson.toJson(new Object()));
     }
 
-    @Test public void testMyObject(){
+    @Test
+    public void testMyGsonSerializiesGsonLoads() {
         String asJson = MyGson.toJson(new MyObject());
-        System.out.println(asJson);
-        Gson g = new Gson();
-        System.out.println(g.toJson(new MyObject()));
+        System.out.println("Ours: " + asJson);
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson g = gsonBuilder.serializeNulls().create();
+
+        System.out.println("Otrs: " + g.toJson(new MyObject()));
         MyObject backed = g.fromJson(asJson, MyObject.class);
-
     }
 
-    @Test public void testString(){
-//        assertEquals("{}", MyGson.toJson("hello"));
-        Gson g = new Gson();
-        System.out.println(g.toJson("Hello"));
-    }
+    @Test
+    public void testGeneratedJsonAreEquals() {
+        String our = MyGson.toJson(new MyObject());
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson g = gsonBuilder.serializeNulls().create();
+        String their = g.toJson(new MyObject());
 
-    @Test public void testInteger(){
-        assertEquals("{}", MyGson.toJson(null));
+        assertEquals(our, their);
     }
 }
