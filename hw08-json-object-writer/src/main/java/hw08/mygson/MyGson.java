@@ -8,6 +8,132 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Array;
 import java.util.Collection;
 
+
+/**
+ *
+ * <p>Utility class provides toJson method</p>
+ *
+ * <p><b>Usage sample</b></p>
+ *
+ * 1) Declare the class with couple fields
+ * <blockquote><pre>
+ * public class A {
+ *     private int INT = 3;
+ *     private int[] INTS = {1,2,3,4,5,6};
+ *
+ *     private String STR = "str";
+ *     private String[] STRS = {"str0", "str1"};
+ *
+ *     private int defaultInt;
+ *     private String defaultString;
+ *     private Object defaultReference;
+ *
+ *     private Collection collection = new ArrayList(Arrays.asList(1,2,3,4,5,6));
+ *     private int[][] nestedArray = new int[][]{{1,2,3}, {1,2,3}};
+ *
+ *     private char aChar = 'a';
+ *     private byte aByte = 0x1;
+ *     private long aLong = 123L;
+ *     private short aShort = 10000;
+ *     private boolean aBoolean = false;
+ *     private float aFloat = 1.24F;
+ *     private double aDouble = 1.23;
+ * }
+ *
+ * # 2) serialize it
+ * String jsonRepresentation = MyGson.toJson(new A())
+ *
+ * # 3) See output is:
+ * {
+ *     "aBoolean": false,
+ *     "aByte": 1,
+ *     "aChar": "a",
+ *     "aDouble": 1.23,
+ *     "aFloat": 1.24,
+ *     "aLong": 123,
+ *     "aShort": 10000,
+ *     "collection": [
+ *         1,
+ *         2,
+ *         3,
+ *         4,
+ *         5,
+ *         6
+ *     ],
+ *     "defaultInt": 0,
+ *     "defaultReference": null,
+ *     "defaultString": null,
+ *     "INT": 3,
+ *     "INTS": [
+ *         1,
+ *         2,
+ *         3,
+ *         4,
+ *         5,
+ *         6
+ *     ],
+ *     "nestedArray": [
+ *         [
+ *             1,
+ *             2,
+ *             3
+ *         ],
+ *         [
+ *             1,
+ *             2,
+ *             3
+ *         ]
+ *     ],
+ *     "STR": "str",
+ *     "STRS": [
+ *         "str0",
+ *         "str1"
+ *     ]
+ * }
+ * </pre>
+ * </blockquote>
+ *
+ * <p><b>Supports</b></p>
+ * <p>* Primitives</p>
+ * <p>* Float</p>
+ * <p>* Double autoboxing</p>
+ * <p>* java.util.Collection</p>
+ * <p>* arrays and nested arrays of previous types</p>
+ * <p>* Nested object declaration</p>
+ * <p></p>
+ *
+ * <p><b>Nested object declaration</b></p>
+ * You can declare custom class in Class declaration and it will be serialized.
+ * Look at sample:
+ * <blockquote><pre>
+ * class B{
+ *     int a = 3;
+ * }
+ *
+ * public class A {
+ *     private int INT = 3;
+ *     private B b = new B();
+ * }
+ * # serialize it
+ * String jsonRepresentation = MyGson.toJson(new A())
+ *
+ * # result
+ * {
+ *     "INT": 3,
+ *     "b": {
+ *        "a": 3
+ *     }
+ * }
+ *</pre></blockquote>
+ * <p><b>About logic of String, Integer and so on</b></p>
+ *
+ * <p>Google Gson yields Gson.toJson("hello") -> "hello"</p>
+ * <p>MyGson yields MyGson.toJson("hello") ->
+ * "{long json with all inner String fields: value, coder, hash, serialVersionUID....}.</p>
+ *
+ * <p></p>
+ * <b>I have learned you all what I know</b>
+ */
 public class MyGson {
 
     public static String toJson(Object instance) {
@@ -82,7 +208,7 @@ public class MyGson {
             return Json.createValue(value.toString());
         }
         if(type.equals(float.class)){
-            return Json.createValue((float)value);
+            return handleFloatPrimitive(value);
         }
         if(type.equals(double.class)){
             return Json.createValue((double)value);
@@ -98,6 +224,18 @@ public class MyGson {
         }
 
         throw new RuntimeException("All primitive types was covered. Cant handle type: " + type);
+    }
+
+    /**
+     * float obstacles of float to double conversation
+     * value = 1.24F but in double it represents as 1.2400000093243
+     * we make value = 1.24D
+     * @param value
+     * @return
+     */
+    private static JsonValue handleFloatPrimitive(Object value) {
+        String s = value.toString();
+        return Json.createValue(Double.parseDouble(s));
     }
 
     private static JsonValue toJsonAutoBoxClasses(Object instance, Class<?> type){
