@@ -19,16 +19,21 @@ public class MyGsonTest {
     }
 
     @Test public void testMyObject(){
-//        assertEquals("{}", MyGson.toJson(new MyObject()));
+        String asJson = MyGson.toJson(new MyObject());
+        System.out.println(asJson);
         Gson g = new Gson();
         System.out.println(g.toJson(new MyObject()));
+        MyObject backed = g.fromJson(asJson, MyObject.class);
+
     }
 
     @Test public void testString(){
-        assertEquals("{}", "hello");
+//        assertEquals("{}", MyGson.toJson("hello"));
+        Gson g = new Gson();
+        System.out.println(g.toJson("Hello"));
     }
 
     @Test public void testInteger(){
-        assertEquals("{}", new Integer(4));
+        assertEquals("{}", MyGson.toJson(null));
     }
 }
