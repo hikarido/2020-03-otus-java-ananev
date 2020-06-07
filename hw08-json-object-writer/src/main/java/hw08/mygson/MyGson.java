@@ -3,41 +3,144 @@
  */
 package hw08.mygson;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-import org.glassfish.json.api.*;
-
+import javax.json.*;
 import java.lang.reflect.Field;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.reflect.Array;
+import java.util.Collection;
 
 public class MyGson {
-    static Logger logger = Logger.getLogger(MyGson.class.getName());
-
-    static {
-        logger.setLevel(Level.INFO);
-    }
 
     public static String toJson(Object instance) {
-        System.out.println(MyGson.class.getName());
-        JsonObjectBuilder builder = Json.createObjectBuilder();
         if(instance == null){
-            return builder.addNull(instance.getClass().getName()).toString();
+            return JsonValue.EMPTY_JSON_OBJECT.toString();
         }
-        Class<?> instanceClass = instance.getClass();
-        Field[] fields = instanceClass.getDeclaredFields();
-        for(Field fieldDescriptor: fields){
+
+        try{
+            JsonValue value = toJsonObject(instance, instance.getClass());
+            return value.toString();
+        }
+        catch (IllegalAccessException e){
+            throw new RuntimeException("Cant serialize to json", e);
+        }
+    }
+
+    private static JsonValue iterateNext(Object value, Class<?> type) throws IllegalAccessException {
+        if(value == null){
+            return JsonValue.NULL;
+        }
+        else if(type.isArray()){
+            return toJsonArray(value);
+        }
+        else if(type.isPrimitive()){
+           return toJsonPrimitive(value, type);
+        }
+        else if(Collection.class.isAssignableFrom(type)){
+            Collection collection = (Collection)value;
+            return toJsonArray(collection.toArray());
+        }
+        else if(type.equals(String.class)){
+            return Json.createValue((String)value);
+        }
+        else if(Number.class.isAssignableFrom(type)){
+            return toJsonAutoBoxClasses(value, type);
+        }
+        else {
+            return toJsonObject(value, type);
+        }
+    }
+
+    private static JsonValue toJsonArray(Object value) throws IllegalAccessException {
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        if(value == null){
+            return JsonValue.NULL;
+        }
+
+        int len = Array.getLength(value);
+
+        if(len == 0){
+            return JsonValue.EMPTY_JSON_ARRAY;
+        }
+
+        for(int i = 0; i < len; i++){
+            Object val = Array.get(value, i);
+            Class<?> type = val.getClass();
+            arrayBuilder.add(iterateNext(val, type));
+        }
+
+        return arrayBuilder.build();
+    }
+
+    private static JsonValue toJsonPrimitive(Object value, Class<?> type){
+        if(type.equals(int.class)){
+            return Json.createValue((int)value);
+        }
+        if(type.equals(long.class)){
+            return Json.createValue((long)value);
+        }
+        if(type.equals(char.class)){
+            // required by Gson. It cant in char as int like 97 <=> 'a'
+            return Json.createValue(value.toString());
+        }
+        if(type.equals(float.class)){
+            return Json.createValue((float)value);
+        }
+        if(type.equals(double.class)){
+            return Json.createValue((double)value);
+        }
+        if(type.equals(boolean.class)){
+            return (boolean)value == true ? JsonValue.TRUE: JsonValue.FALSE;
+        }
+        if(type.equals(short.class)){
+            return Json.createValue((short)value);
+        }
+        if(type.equals(byte.class)){
+            return Json.createValue((byte)value);
+        }
+
+        throw new RuntimeException("All primitive types was covered. Cant handle type: " + type);
+    }
+
+    private static JsonValue toJsonAutoBoxClasses(Object instance, Class<?> type){
+        boolean toLong =
+                Integer.class.isAssignableFrom(type) ||
+                        Byte.class.isAssignableFrom(type) ||
+                        Long.class.isAssignableFrom(type) ||
+                        Short.class.isAssignableFrom(type);
+
+        boolean toDouble =
+                Float.class.isAssignableFrom(type) ||
+                Double.class.isAssignableFrom(type);
+
+        if(toLong){
+            Long val = Long.valueOf(instance.toString());
+            return Json.createValue(val.longValue());
+        }
+
+        if(toDouble){
+            Double val = Double.valueOf(instance.toString());
+            return Json.createValue(val.doubleValue());
+        }
+
+        throw new RuntimeException("AutoBox type is not supported: " + type);
+    }
+
+    private static JsonValue toJsonObject(Object instance, Class<?> instanceType) throws IllegalAccessException {
+        JsonObjectBuilder builder = Json.createObjectBuilder();
+        if (instance == null) {
+            return JsonValue.NULL;
+        }
+
+        Field[] fields = instanceType.getDeclaredFields();
+
+        for (Field fieldDescriptor : fields) {
             fieldDescriptor.setAccessible(true);
-            if(fieldDescriptor.getType().isArray()){
-                logger.log(Level.INFO, fieldDescriptor.getName() + " []");
-            }
-            else if(fieldDescriptor.getType().isPrimitive()){
-                logger.log(Level.INFO, fieldDescriptor.getName() + " P");
-            }
-            else {
-                logger.log(Level.INFO, fieldDescriptor.getName() + " C");
-            }
+            String name = fieldDescriptor.getName();
+            Object value = fieldDescriptor.get(instance);
+            Class<?> type = fieldDescriptor.getType();
+            JsonValue nextJsonValue = iterateNext(value, type);
+            builder.add(name, nextJsonValue);
         }
-        return "{}";
+
+        return builder.build();
     }
 }
