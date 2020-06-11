@@ -9,11 +9,14 @@ import static org.junit.Assert.*;
 
 import com.google.gson.Gson;
 
+import java.util.Collections;
+import java.util.List;
+
 
 public class MyGsonTest {
     @Test
     public void testNull() {
-        assertEquals("{}", MyGson.toJson(null));
+        assertEquals("null", MyGson.toJson(null));
     }
 
     @Test
@@ -41,5 +44,33 @@ public class MyGsonTest {
         String their = g.toJson(new MyObject());
 
         assertEquals(our, their);
+    }
+
+    @Test
+    public void testO1() {
+        var gson = new GsonBuilder().serializeNulls().create();
+        assertEquals(gson.toJson(null), MyGson.toJson(null));
+        assertEquals(gson.toJson((byte)1), MyGson.toJson((byte)1));
+        assertEquals(gson.toJson((short)1f), MyGson.toJson((short)1f));
+        assertEquals(gson.toJson(1), MyGson.toJson(1));
+        assertEquals(gson.toJson(1L), MyGson.toJson(1L));
+        assertEquals(gson.toJson(1f), MyGson.toJson(1f));
+        assertEquals(gson.toJson(1d), MyGson.toJson(1d));
+        assertEquals(gson.toJson("aaa"), MyGson.toJson("aaa"));
+        assertEquals(gson.toJson('a'), MyGson.toJson('a'));
+        assertEquals(gson.toJson(new int[] {1, 2, 3}), MyGson.toJson(new int[] {1, 2, 3}));
+        assertEquals(
+                gson.toJson(new MyObject[] {new MyObject(), new MyObject()}),
+                MyGson.toJson(new MyObject[] {new MyObject(), new MyObject()})
+        );
+        assertEquals(gson.toJson(List.of(1, 2 ,3)), MyGson.toJson(List.of(1, 2 ,3)));
+
+
+        assertEquals(
+                gson.toJson(List.of(new MyObject(), new MyObject())),
+                MyGson.toJson(List.of(new MyObject(), new MyObject()))
+        );
+
+        assertEquals(gson.toJson(Collections.singletonList(1)), MyGson.toJson(Collections.singletonList(1)));
     }
 }

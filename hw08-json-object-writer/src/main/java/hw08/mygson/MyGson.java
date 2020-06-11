@@ -7,6 +7,8 @@ import javax.json.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Array;
 import java.util.Collection;
+import org.apache.commons.lang3.ClassUtils;
+
 
 
 /**
@@ -125,11 +127,16 @@ import java.util.Collection;
  *     }
  * }
  *</pre></blockquote>
- * <p><b>About logic of String, Integer and so on</b></p>
- *
+ * <p><b>Aggregate types</b></p>
+ * Aggregate classes - complex objects which traits as one entity of data.
+ * These types are not parsed. Behaviour is equal to Gson.
+ * <p>* String</p>
+ * <p>* Primitive arrays</p>
+ * <p>* Primitive types when auto box happens </p>
+ * <p>* Wrappers for primitive types - Integer, Character, Double</p>
+ * <p>* </p>
  * <p>Google Gson yields Gson.toJson("hello") -> "hello"</p>
- * <p>MyGson yields MyGson.toJson("hello") ->
- * "{long json with all inner String fields: value, coder, hash, serialVersionUID....}.</p>
+ * <p>MyGson yields MyGson.toJson("hello") -> "hello"</p>
  *
  * <p></p>
  * <b>I have learned you all what I know</b>
@@ -138,7 +145,7 @@ public class MyGson {
 
     public static String toJson(Object instance) {
         if(instance == null){
-            return JsonValue.EMPTY_JSON_OBJECT.toString();
+            return JsonValue.NULL.toString();
         }
 
         try{
@@ -167,7 +174,7 @@ public class MyGson {
         else if(type.equals(String.class)){
             return Json.createValue((String)value);
         }
-        else if(Number.class.isAssignableFrom(type)){
+        else if(ClassUtils.isPrimitiveWrapper(type)){
             return toJsonAutoBoxClasses(value, type);
         }
         else {
@@ -249,6 +256,8 @@ public class MyGson {
                 Float.class.isAssignableFrom(type) ||
                 Double.class.isAssignableFrom(type);
 
+        boolean toCharacter = Character.class.isAssignableFrom(type);
+
         if(toLong){
             Long val = Long.valueOf(instance.toString());
             return Json.createValue(val.longValue());
@@ -257,6 +266,11 @@ public class MyGson {
         if(toDouble){
             Double val = Double.valueOf(instance.toString());
             return Json.createValue(val.doubleValue());
+        }
+
+        if(toCharacter){
+            Character value = (Character)instance;
+            return Json.createValue(value.toString());
         }
 
         throw new RuntimeException("AutoBox type is not supported: " + type);
@@ -268,17 +282,26 @@ public class MyGson {
             return JsonValue.NULL;
         }
 
-        Field[] fields = instanceType.getDeclaredFields();
+        boolean isAggregate = ClassUtils.isPrimitiveOrWrapper(instanceType) ||
+                instanceType == String.class ||
+                instanceType.isArray() ||
+                Collection.class.isAssignableFrom(instanceType);
 
-        for (Field fieldDescriptor : fields) {
-            fieldDescriptor.setAccessible(true);
-            String name = fieldDescriptor.getName();
-            Object value = fieldDescriptor.get(instance);
-            Class<?> type = fieldDescriptor.getType();
-            JsonValue nextJsonValue = iterateNext(value, type);
-            builder.add(name, nextJsonValue);
+        if(isAggregate){
+            return iterateNext(instance, instanceType);
+        }
+        else{
+            Field[] fields = instanceType.getDeclaredFields();
+            for (Field fieldDescriptor : fields) {
+                fieldDescriptor.setAccessible(true);
+                String name = fieldDescriptor.getName();
+                Object value = fieldDescriptor.get(instance);
+                Class<?> type = fieldDescriptor.getType();
+                JsonValue nextJsonValue = iterateNext(value, type);
+                builder.add(name, nextJsonValue);
+            }
+            return builder.build();
         }
 
-        return builder.build();
     }
 }
