@@ -13,3 +13,6 @@
 * [HW 05](./hw05-auto-logging) - Make your class auto logable by magic proxy (AMS, AutoProxy, class loader lesson)
 * [HW 06](./hw06-atm-single) - Apply SOLID principles. Design your ATM emulator architecture (SOLID, Coupling, Cohesion lesson)
 * [HW 08](./hw08-json-object-writer) - First look at json ecosystem (GSON, javax.json and custom toGson, serialization Lesson)
+* [HW 09](./hw09-custom-orm) - Using JDBC (Databases, ORM, JDBC, Multilayer architecture lesson)
+# Teachers repo
+[repo](https://github.com/petrelevich/otus_java_2020_03)
