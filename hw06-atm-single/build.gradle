@@ -1,0 +1,24 @@
+plugins {
+    id 'java-library'
+	id 'idea'
+    id 'com.github.johnrengelman.shadow'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+}
+
+shadowJar {
+    archiveBaseName.set('hw06-atm-single')
+    archiveVersion.set('0.1')
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': 'hw06.atm.single.SimpleATMTest'
+    }
+}
+
+tasks.build.dependsOn tasks.shadowJar
