@@ -16,6 +16,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     public EntityClassMetaDataImpl(Class<?> clazz) {
         this.clazz = clazz;
+        getIdField();
     }
 
     @Override
