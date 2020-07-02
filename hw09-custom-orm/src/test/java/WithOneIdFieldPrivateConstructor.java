@@ -5,8 +5,7 @@ public class WithOneIdFieldPrivateConstructor {
     public long id;
     public String fname;
     public String sname;
-
-    private WithOneIdFieldPrivateConstructor() {
+    private WithOneIdFieldPrivateConstructor(){
 
     }
 }

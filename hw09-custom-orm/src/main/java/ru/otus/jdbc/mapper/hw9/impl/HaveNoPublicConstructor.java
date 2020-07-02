@@ -6,5 +6,5 @@ package ru.otus.jdbc.mapper.hw9.impl;
  * requires at least one public constructor. If object has no such constructor
  * this exception must be thrown
  */
-public class HaveNoPublicConstructor extends HomeworkException {
+public class HaveNoPublicConstructor extends HomeworkException{
 }

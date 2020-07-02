@@ -10,12 +10,17 @@ import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 
+/**
+ * Tokenize class into name, default public constructor, fields, field with {@link Id} annotation
+ *
+ * @param <T>
+ */
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     private static Class<?> clazz;
 
     public EntityClassMetaDataImpl(Class<?> clazz) {
-        this.clazz = clazz;
+        EntityClassMetaDataImpl.clazz = clazz;
         getIdField();
     }
 
