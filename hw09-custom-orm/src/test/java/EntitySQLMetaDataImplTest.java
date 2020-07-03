@@ -5,39 +5,39 @@ import static org.junit.Assert.*;
 
 public class EntitySQLMetaDataImplTest {
     @Test
-    public void createTest(){
+    public void createTest() {
         WithOneIdField obj = new WithOneIdField();
-        new EntitySQLMetaDataImpl(obj.getClass());
+        new EntitySQLMetaDataImpl<>(obj.getClass());
     }
 
     @Test
-    public void getSelectAllSql(){
+    public void getSelectAllSql() {
         WithOneIdField obj = new WithOneIdField();
-        var entity = new EntitySQLMetaDataImpl(obj.getClass());
+        var entity = new EntitySQLMetaDataImpl<>(obj.getClass());
         String expected = "SELECT * FROM WithOneIdField;";
         assertEquals(expected, entity.getSelectAllSql());
     }
 
     @Test
-    public void getSelectByIdSql(){
+    public void getSelectByIdSql() {
         WithOneIdField obj = new WithOneIdField();
-        var entity = new EntitySQLMetaDataImpl(obj.getClass());
+        var entity = new EntitySQLMetaDataImpl<>(obj.getClass());
         String expected = "SELECT * FROM WithOneIdField WHERE id = ?;";
         assertEquals(expected, entity.getSelectByIdSql());
     }
 
     @Test
-    public void getInsertSql(){
+    public void getInsertSql() {
         WithOneIdField obj = new WithOneIdField();
-        var entity = new EntitySQLMetaDataImpl(obj.getClass());
+        var entity = new EntitySQLMetaDataImpl<>(obj.getClass());
         String expected = "INSERT INTO WithOneIdField (fname, sname) VALUES (?, ?);";
         assertEquals(expected, entity.getInsertSql());
     }
 
     @Test
-    public void getUpdateSql(){
+    public void getUpdateSql() {
         WithOneIdField obj = new WithOneIdField();
-        var entity = new EntitySQLMetaDataImpl(obj.getClass());
+        var entity = new EntitySQLMetaDataImpl<>(obj.getClass());
         String expected = "UPDATE WithOneIdField SET (fname = ?, sname = ?) WHERE ? = ?;";
         assertEquals(expected, entity.getUpdateSql());
     }

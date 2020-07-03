@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
  */
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
-    private static Class<?> clazz;
+    private Class<T> clazz;
 
     public EntityClassMetaDataImpl(Class<?> clazz) {
-        EntityClassMetaDataImpl.clazz = clazz;
+        this.clazz = (Class<T>) clazz;
         getIdField();
     }
 
@@ -33,7 +33,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     @SuppressWarnings("unchecked")
     public Constructor<T> getConstructor() {
         try {
-            return (Constructor<T>) clazz.getConstructor();
+            return clazz.getConstructor();
         } catch (NoSuchMethodException e) {
             throw new HaveNoPublicConstructor();
         }

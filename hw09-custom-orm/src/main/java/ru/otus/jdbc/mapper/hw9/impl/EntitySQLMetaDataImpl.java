@@ -1,5 +1,6 @@
 package ru.otus.jdbc.mapper.hw9.impl;
 
+import ru.otus.jdbc.mapper.EntityClassMetaData;
 import ru.otus.jdbc.mapper.EntitySQLMetaData;
 
 import java.lang.reflect.Field;
@@ -10,9 +11,13 @@ import java.util.stream.Collectors;
 /**
  * Generates template sql queries for class which is passed to constructor
  */
-public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
+public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
 
-    private final EntityClassMetaDataImpl classMetaData;
+    public EntityClassMetaDataImpl<T> getClassMetaData() {
+        return classMetaData;
+    }
+
+    private final EntityClassMetaDataImpl<T> classMetaData;
     private final static String selectAllSqlTemplate = "SELECT * FROM %s;";
     private final static String selectByIdSqlTemplate = "SELECT * FROM %s WHERE %s = ?;";
     private final static String insertSqlTemplate = "INSERT INTO %s (%s) VALUES (%s);";
@@ -21,7 +26,7 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
     private final static String sqlFieldAndValuesSeparator = ", ";
 
     public EntitySQLMetaDataImpl(Class<?> clazz) {
-        classMetaData = new EntityClassMetaDataImpl(clazz);
+        classMetaData = new EntityClassMetaDataImpl<>(clazz);
     }
 
     /**
