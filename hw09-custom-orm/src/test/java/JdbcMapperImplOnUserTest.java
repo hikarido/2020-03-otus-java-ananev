@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class JdbcMapperImplTest {
+public class JdbcMapperImplOnUserTest {
 
     static DataSource dataSource;
     static SessionManagerJdbc sessionManager;
