@@ -22,16 +22,19 @@ public class User {
                 '}';
     }
 
-    public User(long id, String name, Byte age) {
+    public User(long id, String name, int age) {
         this.id = id;
         this.name = name;
         this.age = age;
     }
 
+    public User(){
+    }
+
     @Id
     public long id;
     public String name;
-    public Byte age;
+    public int age;
 
 
 }

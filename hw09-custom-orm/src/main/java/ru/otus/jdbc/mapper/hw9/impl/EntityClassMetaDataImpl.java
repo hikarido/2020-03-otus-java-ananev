@@ -19,14 +19,14 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     private Class<T> clazz;
 
-    public EntityClassMetaDataImpl(Class<?> clazz) {
-        this.clazz = (Class<T>) clazz;
+    public EntityClassMetaDataImpl(Class<T> clazz) {
+        this.clazz = clazz;
         getIdField();
     }
 
     @Override
     public String getName() {
-        return clazz.getName();
+        return clazz.getSimpleName();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         }
 
         if (idAnnotated.isEmpty()) {
-            throw new HaveNoIdField();
+            throw new HaveNoIdField(clazz + " have no Id annotated field");
         }
 
         return idAnnotated.get(0);

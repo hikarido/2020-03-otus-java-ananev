@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class EntityClassMetaDataImplTest {
     @Test
     public void getClassNameOfIntegerTest() {
-        assertEquals(WithOneIdField.class.getName(), new EntityClassMetaDataImpl<>(WithOneIdField.class).getName());
+        assertEquals("WithOneIdField", new EntityClassMetaDataImpl<>(WithOneIdField.class).getName());
     }
 
     @Test

@@ -6,4 +6,7 @@ package ru.otus.jdbc.mapper.hw9.impl;
  * If this contract was violated this exception must be thrown
  */
 public class HaveNoIdField extends HomeworkException{
+    HaveNoIdField(String msg){
+        super(msg);
+    }
 }

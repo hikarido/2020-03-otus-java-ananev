@@ -12,7 +12,7 @@ import javax.sql.DataSource;
  * created on 03.02.19.
  */
 public class DataSourceH2 implements DataSource {
-    private static final String URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
+    private static final String URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;TRACE_LEVEL_SYSTEM_OUT=3";
 
     @Override
     public Connection getConnection() throws SQLException {

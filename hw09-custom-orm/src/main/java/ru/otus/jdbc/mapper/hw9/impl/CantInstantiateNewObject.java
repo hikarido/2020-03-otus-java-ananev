@@ -5,4 +5,10 @@ package ru.otus.jdbc.mapper.hw9.impl;
  * when sql ResultSet maps to java object this exception must be thrown
  */
 public class CantInstantiateNewObject extends HomeworkException {
+    public CantInstantiateNewObject(){
+    }
+
+    public CantInstantiateNewObject(Exception e){
+        super(e);
+    }
 }

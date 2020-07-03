@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
-    private Class<?> mappingClass;
+    private Class<T> mappingClass;
     private EntitySQLMetaDataImpl<T> sqlGenerator;
     private EntityClassMetaDataImpl<T> metaData;
     private DbExecutor<T> sqlExecutor;
@@ -29,10 +29,10 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     // Этот DatabaseSession пустой и получить сессию для DbExecutor нет возможности
     SessionManagerJdbc sessionManager;
 
-    public JdbcMapperImpl(Class<?> clazz, SessionManagerJdbc manager) {
+    public JdbcMapperImpl(Class<T> clazz, SessionManagerJdbc manager) {
         mappingClass = clazz;
         sessionManager = manager;
-        sqlGenerator = new EntitySQLMetaDataImpl<>(mappingClass.getClass());
+        sqlGenerator = new EntitySQLMetaDataImpl<T>(clazz);
         metaData = sqlGenerator.getClassMetaData();
         sqlExecutor = new DbExecutorImpl<T>();
     }
@@ -48,7 +48,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
             );
             sessionManager.commitSession();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            throw new CantExecuteSqlStatement(throwables);
         }
 
 
@@ -62,7 +62,6 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
         String idColumnName = idField.getName();
         try {
             Object idColumnValue = idField.get(objectData);
-            params.add(idColumnName);
             params.add(idColumnValue);
 
             sqlExecutor.executeInsert(
@@ -79,7 +78,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
             exc.addSuppressed(e);
             throw exc;
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new CantExecuteSqlStatement(e);
         }
 
 
@@ -111,10 +110,13 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
         Function<ResultSet, T> resultHandler = (rs) -> {
             try {
-                rs.next();
-                return createObjectFromResultSet(rs);
+                if (rs.next()) {
+                    return createObjectFromResultSet(rs);
+                } else {
+                    return null;
+                }
             } catch (SQLException throwables) {
-                return null;
+                throw new CantExecuteSqlStatement(throwables);
             }
         };
 
@@ -128,9 +130,8 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
             return result.orElse(null);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
             sessionManager.rollbackSession();
-            return null;
+            throw new CantExecuteSqlStatement(throwables);
         }
     }
 
@@ -161,13 +162,9 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
             return obj;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            var exc = new CantInstantiateNewObject();
-            exc.addSuppressed(e);
-            throw exc;
+            throw new CantInstantiateNewObject(e);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            throw new CantInstantiateNewObject(throwables);
         }
-
-        return null;
     }
 }

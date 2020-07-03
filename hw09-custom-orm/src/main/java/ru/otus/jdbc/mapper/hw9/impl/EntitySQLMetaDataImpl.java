@@ -18,37 +18,42 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
     }
 
     private final EntityClassMetaDataImpl<T> classMetaData;
-    private final static String selectAllSqlTemplate = "SELECT * FROM %s;";
-    private final static String selectByIdSqlTemplate = "SELECT * FROM %s WHERE %s = ?;";
+    private final static String selectAllSqlTemplate = "SELECT %s FROM %s;";
+    private final static String selectByIdSqlTemplate = "SELECT %s FROM %s WHERE %s = ?;";
     private final static String insertSqlTemplate = "INSERT INTO %s (%s) VALUES (%s);";
-    private final static String updateSqlTemplate = "UPDATE %s SET (%s) WHERE ? = ?;";
+    private final static String updateSqlTemplate = "UPDATE %s SET %s WHERE %s = ?;";
     private final static String questionJDBCPlaceholder = "?";
     private final static String sqlFieldAndValuesSeparator = ", ";
 
-    public EntitySQLMetaDataImpl(Class<?> clazz) {
+    public EntitySQLMetaDataImpl(Class<T> clazz) {
         classMetaData = new EntityClassMetaDataImpl<>(clazz);
     }
 
     /**
      * Generates
-     * SELECT * FROM TABLE_NAME;
+     * SELECT COLUMN1, COLUMN2, ..., COLUMN_N FROM TABLE_NAME;
      *
      * @return
      */
     @Override
     public String getSelectAllSql() {
-        return String.format(selectAllSqlTemplate, classMetaData.getName());
+        return String.format(selectAllSqlTemplate, getColumnNamesCommaSeparated(), classMetaData.getName());
     }
 
     /**
      * Generates
-     * SELECT * FROM TABLE_NAME WHERE ID_FIELD_NAME = ?
+     * SELECT COLUMN_1, COLUMN_2, ..., COLUMN_N FROM TABLE_NAME WHERE ID_FIELD_NAME = ?
      *
      * @return
      */
     @Override
     public String getSelectByIdSql() {
-        return String.format(selectByIdSqlTemplate, classMetaData.getName(), classMetaData.getIdField().getName());
+        return String.format(
+                selectByIdSqlTemplate,
+                getColumnNamesCommaSeparated(),
+                classMetaData.getName(),
+                classMetaData.getIdField().getName()
+        );
     }
 
     /**
@@ -73,7 +78,7 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
     /**
      * Generates
      * UPDATE TABLE_NAME SET FIELD_1 = ?, FIELD_2 = ?, ..., FIELD_N = ?
-     * WHERE ? = ?
+     * WHERE ID_FIELD_NAME = ?
      *
      * @return
      */
@@ -86,6 +91,18 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
                 .map(o -> o.getName() + " = " + questionJDBCPlaceholder)
                 .collect(Collectors.joining(sqlFieldAndValuesSeparator));
 
-        return String.format(updateSqlTemplate, tableName, nameAssignQuestionPlaceholder);
+        return String.format(
+                updateSqlTemplate,
+                tableName,
+                nameAssignQuestionPlaceholder,
+                classMetaData.getIdField().getName()
+        );
+    }
+
+    String getColumnNamesCommaSeparated() {
+        return classMetaData.getAllFields()
+                .stream()
+                .map(Field::getName)
+                .collect(Collectors.joining(sqlFieldAndValuesSeparator));
     }
 }

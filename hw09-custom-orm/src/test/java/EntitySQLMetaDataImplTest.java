@@ -14,7 +14,7 @@ public class EntitySQLMetaDataImplTest {
     public void getSelectAllSql() {
         WithOneIdField obj = new WithOneIdField();
         var entity = new EntitySQLMetaDataImpl<>(obj.getClass());
-        String expected = "SELECT * FROM WithOneIdField;";
+        String expected = "SELECT id, fname, sname FROM WithOneIdField;";
         assertEquals(expected, entity.getSelectAllSql());
     }
 
@@ -22,7 +22,7 @@ public class EntitySQLMetaDataImplTest {
     public void getSelectByIdSql() {
         WithOneIdField obj = new WithOneIdField();
         var entity = new EntitySQLMetaDataImpl<>(obj.getClass());
-        String expected = "SELECT * FROM WithOneIdField WHERE id = ?;";
+        String expected = "SELECT id, fname, sname FROM WithOneIdField WHERE id = ?;";
         assertEquals(expected, entity.getSelectByIdSql());
     }
 
@@ -38,7 +38,7 @@ public class EntitySQLMetaDataImplTest {
     public void getUpdateSql() {
         WithOneIdField obj = new WithOneIdField();
         var entity = new EntitySQLMetaDataImpl<>(obj.getClass());
-        String expected = "UPDATE WithOneIdField SET (fname = ?, sname = ?) WHERE ? = ?;";
+        String expected = "UPDATE WithOneIdField SET fname = ?, sname = ? WHERE id = ?;";
         assertEquals(expected, entity.getUpdateSql());
     }
 }
