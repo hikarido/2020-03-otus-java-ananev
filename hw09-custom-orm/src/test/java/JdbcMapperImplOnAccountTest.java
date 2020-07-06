@@ -5,7 +5,6 @@ import org.junit.Test;
 import ru.otus.h2.DataSourceH2;
 import ru.otus.jdbc.mapper.hw9.impl.JdbcMapperImpl;
 import ru.otus.jdbc.mapper.hw9.impl.Account;
-import ru.otus.jdbc.mapper.hw9.impl.User;
 import ru.otus.jdbc.sessionmanager.SessionManagerJdbc;
 
 import javax.sql.DataSource;
