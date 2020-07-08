@@ -14,5 +14,6 @@
 * [HW 06](./hw06-atm-single) - Apply SOLID principles. Design your ATM emulator architecture (SOLID, Coupling, Cohesion lesson)
 * [HW 08](./hw08-json-object-writer) - First look at json ecosystem (GSON, javax.json and custom toGson, serialization Lesson)
 * [HW 09](./hw09-custom-orm) - Using JDBC (Databases, ORM, JDBC, Multilayer architecture lesson)
+* [HW 10](./hw10-hibernate) - Hibernate ORM first look (Databases, ORM, Hibernate lesson)
 # Teachers repo
 [repo](https://github.com/petrelevich/otus_java_2020_03)
