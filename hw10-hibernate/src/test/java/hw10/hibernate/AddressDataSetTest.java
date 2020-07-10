@@ -3,6 +3,7 @@ package hw10.hibernate;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import ru.otus.core.model.AddressDataSet;
 
@@ -11,7 +12,7 @@ public class AddressDataSetTest {
     public void createEmptyTest() {
         var obj = new AddressDataSet();
         assertEquals(obj.getId(), 0);
-        assertEquals(obj.getStreet(), "");
+        assertNull(obj.getStreet());
     }
 
     @Test
