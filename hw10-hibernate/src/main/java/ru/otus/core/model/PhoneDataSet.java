@@ -10,6 +10,7 @@ import java.util.Objects;
 public class PhoneDataSet {
     private long id;
     private String number;
+    private User owner;
 
     @Id
     @Column(name = "id")
@@ -51,5 +52,14 @@ public class PhoneDataSet {
     @Override
     public int hashCode() {
         return Objects.hash(id, number);
+    }
+
+    @ManyToOne
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }
