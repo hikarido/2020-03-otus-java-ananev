@@ -16,10 +16,13 @@ public class User {
     private String name;
 
     @OneToMany(
-            mappedBy = "users",
+            mappedBy = "owner",
             cascade = CascadeType.ALL,
             orphanRemoval = true, fetch = FetchType.LAZY)
-    private final List<PhoneDataSet> phones;
+    private List<PhoneDataSet> phones;
+
+    @OneToOne
+    @JoinColumn(name = "addressdataset_id")
     private AddressDataSet address;
 
     public User() {

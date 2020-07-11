@@ -17,5 +17,9 @@
         <property name="hibernate.hbm2ddl.auto">create</property>
         <property name="hibernate.enable_lazy_load_no_trans">false</property>
 
+        <mapping class="ru.otus.core.model.AddressDataSet"/>
+        <mapping class="ru.otus.core.model.PhoneDataSet"/>
+        <mapping class="ru.otus.core.model.User"/>
+
     </session-factory>
 </hibernate-configuration>

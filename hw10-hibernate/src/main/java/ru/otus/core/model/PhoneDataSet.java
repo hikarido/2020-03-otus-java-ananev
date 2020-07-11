@@ -10,6 +10,8 @@ import java.util.Objects;
 public class PhoneDataSet {
     private long id;
     private String number;
+
+    @ManyToOne
     private User owner;
 
     @Id

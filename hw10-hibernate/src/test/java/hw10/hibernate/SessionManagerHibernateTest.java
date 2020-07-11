@@ -8,12 +8,19 @@ import org.junit.Test;
 import ru.otus.hibernate.HibernateUtils;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 import org.hibernate.SessionFactory;
-import ru.otus.core.model.User;
+import ru.otus.core.model.*;
 
 
 public class SessionManagerHibernateTest {
-    @Test public void crateSessionTest() {
-        SessionFactory sessionFactory = HibernateUtils.buildSessionFactory("hibernate.cfg.xml", User.class);
+    @Test
+    public void crateSessionTest() {
+        SessionFactory sessionFactory = HibernateUtils
+                .buildSessionFactory(
+                        "hibernate.cfg.xml",
+                        User.class,
+                        PhoneDataSet.class,
+                        AddressDataSet.class
+                );
 
         SessionManagerHibernate sessionManager = new SessionManagerHibernate(sessionFactory);
     }
