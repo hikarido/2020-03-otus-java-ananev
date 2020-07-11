@@ -4,14 +4,13 @@ import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import ru.otus.core.dao.UserDaoHibernate;
+import ru.otus.hibernate.dao.UserDaoHibernate;
 import ru.otus.core.model.*;
 import ru.otus.core.service.DbServiceUserImpl;
 import ru.otus.hibernate.HibernateUtils;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
