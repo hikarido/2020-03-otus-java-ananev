@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -17,11 +18,11 @@ public class User {
 
     @OneToMany(
             mappedBy = "owner",
-            cascade = CascadeType.ALL,
+            cascade = javax.persistence.CascadeType.ALL,
             orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PhoneDataSet> phones;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "addressdataset_id")
     private AddressDataSet address;
 
@@ -78,6 +79,8 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", phones=" + phones +
+                ", address=" + address +
                 '}';
     }
 }
