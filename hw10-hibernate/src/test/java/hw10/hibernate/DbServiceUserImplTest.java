@@ -55,7 +55,68 @@ public class DbServiceUserImplTest {
     }
 
     @Test
-    public void createSeveralUsersTest() {
+    public void addSeveralEmptyUsersTest() {
+        var users = new ArrayList<User>();
+
+        {
+            var first = new User();
+            first.setName("first");
+            users.add(first);
+        }
+
+        {
+            var second = new User();
+            second.setName("second");
+            users.add(second);
+        }
+
+        {
+            var third = new User();
+            third.setName("third");
+            users.add(third);
+        }
+
+        users.forEach(user -> service.saveUser(user));
+
+        {
+            int index = 0;
+            Optional<User> first = service.getUser(users.get(index).getId());
+            assertNotNull(first);
+            assertEquals(first.get().getName(), users.get(index).getName());
+        }
+
+        {
+            int index = 1;
+            Optional<User> second = service.getUser(users.get(index).getId());
+            assertNotNull(second);
+            assertEquals(second.get().getName(), users.get(index).getName());
+        }
+
+        {
+            int index = 2;
+            Optional<User> third = service.getUser(users.get(index).getId());
+            assertNotNull(third);
+            assertEquals(third.get().getName(), users.get(index).getName());
+        }
+
+    }
+
+    @Test
+    public void addUserWithStreetTest() {
+        var first = new User();
+        first.setName("first");
+        var firstAddress = new AddressDataSet();
+        firstAddress.setStreet("1");
+        first.setAddress(firstAddress);
+        long id = service.saveUser(first);
+        Optional<User> obtained = service.getUser(id);
+        assertNotNull(obtained);
+        assertEquals(obtained.get().getName(), first.getName());
+        assertEquals(obtained.get().getAddress().getStreet(), first.getAddress().getStreet());
+    }
+
+    @Test
+    public void addSeveralUsersWithStreetTest() {
         var users = new ArrayList<User>();
 
         {
@@ -113,5 +174,23 @@ public class DbServiceUserImplTest {
 
     }
 
+    @Test
+    public void addUserWithStreetAndPhone() {
+        var user = new User();
+        user.setName("Hero");
+        var address = new AddressDataSet();
+        address.setStreet("Street");
+        user.setAddress(address);
+        var phone = new PhoneDataSet();
+        phone.setNumber("8800200600");
+        user.addPhone(phone);
 
+        long id = service.saveUser(user);
+        Optional<User> result = service.getUser(id);
+        assertTrue(result.isPresent());
+        User obtained = result.get();
+        assertEquals(user.getName(), obtained.getName());
+        assertEquals(user.getPhones().size(), 1);
+        assertEquals(user.getPhones().get(0), phone);
+    }
 }
