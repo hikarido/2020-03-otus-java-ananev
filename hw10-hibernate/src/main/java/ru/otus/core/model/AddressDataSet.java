@@ -9,16 +9,18 @@ import java.util.Objects;
 @Entity
 @Table(name = "addressdataset")
 public class AddressDataSet {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
     private long id;
+
+    @Column(name = "street")
     private String street;
 
     public AddressDataSet() {
     }
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
     public long getId() {
         return id;
     }
@@ -27,7 +29,6 @@ public class AddressDataSet {
         this.id = id;
     }
 
-    @Column(name = "street")
     public String getStreet() {
         return street;
     }
