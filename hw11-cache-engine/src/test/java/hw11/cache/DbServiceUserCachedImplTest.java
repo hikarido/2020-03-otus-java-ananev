@@ -1,13 +1,15 @@
-package hw10.hibernate;
+package hw11.cache;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.cache.internal.StandardTimestampsCacheFactory;
 import org.junit.Before;
 import org.junit.Test;
-
-import ru.otus.hibernate.dao.UserDaoHibernate;
-import ru.otus.core.model.*;
-import ru.otus.core.service.DbServiceUserImpl;
+import ru.otus.core.model.AddressDataSet;
+import ru.otus.core.model.PhoneDataSet;
+import ru.otus.core.model.User;
+import ru.otus.core.service.DbServiceUserCachedImpl;
 import ru.otus.hibernate.HibernateUtils;
+import ru.otus.hibernate.dao.UserDaoHibernate;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 
 import java.util.ArrayList;
@@ -16,12 +18,12 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
-public class DbServiceUserImplTest {
+public class DbServiceUserCachedImplTest {
 
     SessionFactory sessionFactory;
     SessionManagerHibernate manager;
     UserDaoHibernate dao;
-    DbServiceUserImpl service;
+    DbServiceUserCachedImpl service;
 
     @Before
     public void init() {
@@ -34,12 +36,12 @@ public class DbServiceUserImplTest {
                 );
         manager = new SessionManagerHibernate(sessionFactory);
         dao = new UserDaoHibernate(manager);
-        service = new DbServiceUserImpl(dao);
+        service = new DbServiceUserCachedImpl(dao);
     }
 
     @Test
     public void createTest() {
-        var service = new DbServiceUserImpl(dao);
+        var service = new DbServiceUserCachedImpl(dao);
     }
 
     @Test
