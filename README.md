@@ -16,5 +16,6 @@
 * [HW 09](./hw09-custom-orm) - Using JDBC (Databases, ORM, JDBC, Multilayer architecture lesson)
 * [HW 10](./hw10-hibernate) - Hibernate ORM first look (Databases, ORM, Hibernate lesson)
 * [WH 11](./hw11-cache-engine) - Introduce cache to increase system performance (PlainRef, WeakRef, SoftRef, PhantomRef, GC and refs types, Apply cache lesson)
+* [HW 12](./hw12-web-server) - Web server, http, servlet, Jetty (Web server usage lesson)
 # Teachers repo
 [repo](https://github.com/petrelevich/otus_java_2020_03)
