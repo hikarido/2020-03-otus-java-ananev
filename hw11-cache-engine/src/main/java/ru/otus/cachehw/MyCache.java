@@ -16,10 +16,10 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     private final Map<K, V> storage = new WeakHashMap<>();
     private final List<WeakReference<HwListener<K, V>>> listeners = new ArrayList<>();
-    private final static String PUT_OPERATION_NAME = "put";
-    private final static String REMOVE_OPERATION_NAME = "remove";
-    private final static String GET_OPERATION_NAME = "get";
-    private final static Logger LOGGER = LoggerFactory.getLogger(MyCache.class);
+    private static final String PUT_OPERATION_NAME = "put";
+    private static final String REMOVE_OPERATION_NAME = "remove";
+    private static final String GET_OPERATION_NAME = "get";
+    private static final Logger LOGGER = LoggerFactory.getLogger(MyCache.class);
 
     @Override
     public void put(K key, V value) {
@@ -58,7 +58,13 @@ public class MyCache<K, V> implements HwCache<K, V> {
         for (var listenerRef : listeners) {
             var listener = listenerRef.get();
             if (listener != null) {
-                listener.notify(key, value, actionName);
+                try{
+
+                    listener.notify(key, value, actionName);
+                }
+                catch (HwListenerException e){
+                    LOGGER.error("Can't notify because " + e);
+                }
             }
         }
     }

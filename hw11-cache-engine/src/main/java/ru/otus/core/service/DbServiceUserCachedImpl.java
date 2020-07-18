@@ -10,7 +10,7 @@ import ru.otus.cachehw.MyCache;
 import java.util.Optional;
 
 public class DbServiceUserCachedImpl implements DBServiceUser {
-    private static Logger logger = LoggerFactory.getLogger(DbServiceUserCachedImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(DbServiceUserCachedImpl.class);
 
     private final UserDao userDao;
     private final MyCache<String, User> cache = new MyCache<>();
@@ -53,6 +53,7 @@ public class DbServiceUserCachedImpl implements DBServiceUser {
                 }
 
                 Optional<User> userOptional = userDao.findById(id);
+                cache.put(String.valueOf(id), userOptional.get());
                 logger.info("user: {}", userOptional.orElse(null));
                 return userOptional;
             } catch (Exception e) {
