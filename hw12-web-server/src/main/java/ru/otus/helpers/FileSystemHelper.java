@@ -14,7 +14,7 @@ public final class FileSystemHelper {
         String path = null;
         File file = new File(String.format("./%s", fileOrResourceName));
         if (file.exists()) {
-            path = URLDecoder.decode(file.toURI().getPath(), StandardCharsets.UTF_8);
+            path = URLDecoder.decode(file.toURI().getPath());
         }
 
         if (path == null) {

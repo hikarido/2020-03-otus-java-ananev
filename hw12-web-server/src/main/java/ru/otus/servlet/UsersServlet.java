@@ -27,11 +27,8 @@ public class UsersServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
-        Map<String, Object> paramsMap = new HashMap<>();
-        User usr = new User(1, "Hero");
-        paramsMap.put("1", usr);
         response.setContentType("text/html");
-        response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, paramsMap));
+        response.getWriter().println("Work in progress");
     }
 
 }
