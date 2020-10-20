@@ -1,6 +1,7 @@
 package ru.otus.servlet;
 
 import com.google.gson.Gson;
+import org.slf4j.LoggerFactory;
 import ru.otus.core.model.User;
 import ru.otus.core.dao.UserDao;
 
@@ -9,10 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.slf4j.Logger;
 
 
 public class UsersApiServlet extends HttpServlet {
-
+    private static Logger logger = LoggerFactory.getLogger(UsersApiServlet.class);
     private static final int ID_PATH_PARAM_POSITION = 1;
 
     private final UserDao userDao;
@@ -25,6 +27,7 @@ public class UsersApiServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        logger.debug("api was used");
         if(request.getPathInfo() == null){
             response.setContentType("application/json;charset=UTF-8");
             ServletOutputStream out = response.getOutputStream();
@@ -32,11 +35,24 @@ public class UsersApiServlet extends HttpServlet {
             return;
         }
 
-        User user = userDao.findById(extractIdFromRequest(request)).orElse(null);
+        final long id = extractIdFromRequest(request);
+        userDao.getSessionManager().beginSession();
+        final User user = userDao.findById(id).orElse(null);
+        userDao.getSessionManager().close();
 
         response.setContentType("application/json;charset=UTF-8");
         ServletOutputStream out = response.getOutputStream();
-        out.print(gson.toJson(user));
+        if(user == null){
+            out.print("{}");
+            logger.debug("There is no such user with id {}", id);
+            return;
+
+        }
+
+        final String json = gson.toJson(user);
+        logger.debug("User was requested: " + json);
+        out.print(json);
+
     }
 
     private long extractIdFromRequest(HttpServletRequest request) {
