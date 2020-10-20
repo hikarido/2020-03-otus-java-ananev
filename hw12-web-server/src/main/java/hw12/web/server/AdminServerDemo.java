@@ -1,24 +1,34 @@
+package hw12.web.server;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.eclipse.jetty.security.HashLoginService;
-import org.eclipse.jetty.security.LoginService;
-import ru.otus.core.dao.InMemoryUserDao;
+import org.hibernate.SessionFactory;
 import ru.otus.core.dao.UserDao;
-import ru.otus.helpers.FileSystemHelper;
+import ru.otus.core.sessionmanager.SessionManager;
+import ru.otus.hibernate.dao.UserDaoHibernate;
+import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 import ru.otus.server.AdminServer;
 import ru.otus.server.UsersWebServer;
-import ru.otus.server.UsersWebServerWithBasicSecurity;
 import ru.otus.services.TemplateProcessor;
 import ru.otus.services.TemplateProcessorImpl;
+import ru.otus.hibernate.HibernateUtils;
+import ru.otus.core.model.*;
 
 public class AdminServerDemo{
     private static final int WEB_SERVER_PORT = 8080;
     private static final String TEMPLATES_DIR = "/templates/";
-    private static final String HASH_LOGIN_SERVICE_CONFIG_NAME = "realm.properties";
-    private static final String REALM_NAME = "AnyRealm";
+    private static final String HIBERNATE_CONFIG = "hibernate.cfg.xml";
 
     public static void main(String[] args) throws Exception {
-        UserDao userDao = new InMemoryUserDao();
+        SessionFactory sessionFactory = HibernateUtils.buildSessionFactory(
+                HIBERNATE_CONFIG,
+                User.class,
+                PhoneDataSet.class,
+                AddressDataSet.class
+        );
+        SessionManagerHibernate sessionManager = new SessionManagerHibernate(sessionFactory);
+
+        UserDao userDao = new UserDaoHibernate(sessionManager);
         Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
         TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
 
