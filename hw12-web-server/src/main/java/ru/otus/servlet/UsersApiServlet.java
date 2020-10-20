@@ -25,6 +25,13 @@ public class UsersApiServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if(request.getPathInfo() == null){
+            response.setContentType("application/json;charset=UTF-8");
+            ServletOutputStream out = response.getOutputStream();
+            out.print("{\"api\": \"try again\"}");
+            return;
+        }
+
         User user = userDao.findById(extractIdFromRequest(request)).orElse(null);
 
         response.setContentType("application/json;charset=UTF-8");
