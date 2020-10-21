@@ -1,10 +1,12 @@
 package ru.otus.servlet;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import org.slf4j.LoggerFactory;
 import ru.otus.core.model.User;
 import ru.otus.core.dao.UserDao;
 
+import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +28,38 @@ public class UsersApiServlet extends HttpServlet {
     }
 
     @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if(req.getPathInfo() == null){
+            resp.setContentType("application/json;charset=UTF-8");
+            ServletOutputStream out = resp.getOutputStream();
+            out.print("{\"api\": \"try again\"}");
+            return;
+        }
+
+        User user = null;
+        try{
+            user = gson.fromJson(req.getReader(), User.class);
+        }
+        catch (JsonParseException e){
+            resp.setContentType("application/json;charset=UTF-8");
+            resp.setStatus(200);
+            ServletOutputStream out = resp.getOutputStream();
+            out.print("{\"api\": \"cant parse user.\"}");
+            return;
+        }
+
+        userDao.getSessionManager().beginSession();
+        final long newId = userDao.insertUser(user);
+        userDao.getSessionManager().close();
+
+        resp.setContentType("application/json;charset=UTF-8");
+        resp.setStatus(200);
+        ServletOutputStream out = resp.getOutputStream();
+        out.print(String.format("{\"new id\": \"%d\"}", newId));
+    }
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        logger.debug("api was used");
         if(request.getPathInfo() == null){
             response.setContentType("application/json;charset=UTF-8");
             ServletOutputStream out = response.getOutputStream();
