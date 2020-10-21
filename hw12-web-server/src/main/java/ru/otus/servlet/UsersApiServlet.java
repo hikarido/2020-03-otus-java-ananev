@@ -12,7 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+
 import org.slf4j.Logger;
+import ru.otus.hibernate.sessionmanager.DatabaseSessionHibernate;
 
 
 public class UsersApiServlet extends HttpServlet {
@@ -67,30 +70,86 @@ public class UsersApiServlet extends HttpServlet {
             return;
         }
 
-        final long id = extractIdFromRequest(request);
-        userDao.getSessionManager().beginSession();
-        final User user = userDao.findById(id).orElse(null);
-        userDao.getSessionManager().close();
 
-        response.setContentType("application/json;charset=UTF-8");
-        ServletOutputStream out = response.getOutputStream();
-        if(user == null){
-            out.print("{}");
-            logger.debug("There is no such user with id {}", id);
+        if(doesItAboutGetUserById(request)){
+            final long id = extractIdFromRequest(request);
+            userDao.getSessionManager().beginSession();
+            final User user = userDao.findById(id).orElse(null);
+            userDao.getSessionManager().close();
+
+            response.setContentType("application/json;charset=UTF-8");
+            ServletOutputStream out = response.getOutputStream();
+            if(user == null){
+                out.print("{}");
+                logger.debug("There is no such user with id {}", id);
+                return;
+
+            }
+
+            final String json = gson.toJson(user);
+            logger.debug("User was requested: " + json);
+            out.print(json);
             return;
-
         }
-
-        final String json = gson.toJson(user);
-        logger.debug("User was requested: " + json);
-        out.print(json);
+        else if(doesItAboutGetAllUsers(request)){
+            userDao.getSessionManager().beginSession();
+            DatabaseSessionHibernate session = (DatabaseSessionHibernate)
+                    userDao.getSessionManager().getCurrentSession();
+            List<User> users = session.getHibernateSession().createQuery(
+                    "SELECT User FROM User").getResultList();
+            System.out.println(users);
+            userDao.getSessionManager().close();
+            return;
+        }
 
     }
 
+    /**
+     * extracts user id of request's path
+     * @param request
+     * @return
+     */
     private long extractIdFromRequest(HttpServletRequest request) {
         String[] path = request.getPathInfo().split("/");
         String id = (path.length > 1)? path[ID_PATH_PARAM_POSITION]: String.valueOf(- 1);
-        return Long.parseLong(id);
+        try{
+            return Long.parseLong(id);
+        }
+        catch (NumberFormatException e){
+            return -1;
+        }
+    }
+
+    /**
+     * determines whether or not one user record was requested by user id
+     * @param request
+     * @return
+     */
+    private boolean doesItAboutGetUserById(final HttpServletRequest request){
+        String[] path = request.getPathInfo().split("/");
+        if(path.length > 1){
+            try{
+                long id = Long.parseLong(path[ID_PATH_PARAM_POSITION]);
+            }
+            catch (NumberFormatException e){
+                return false;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * determines whether or not all users records was requested
+     * @param request
+     * @return
+     */
+    private boolean doesItAboutGetAllUsers(final HttpServletRequest request){
+        if(request.getPathInfo().equals("/")){
+            return true;
+        }
+        return false;
     }
 
 }

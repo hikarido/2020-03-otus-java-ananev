@@ -45,6 +45,14 @@
 
        }
 
+        function getAllUsers() {
+            const allUsersResult = document.getElementById('allUsersResult');
+            fetch('api/user/')
+                .then(
+                response => response.json()
+                )
+                .then(users => userDataContainer.innerHTML = JSON.stringify(users));
+        }
     </script>
 </head>
 
@@ -58,12 +66,19 @@
     <button onclick="getUserById()">Получить</button>
     <pre id="userDataContainer"></pre>
 </div>
+
 <div>
     <h4>2) Добавить пользователя</h4>
     <h5>Введите данные пользователя в формате json</h5>
     <input type="text" id="newUserInput" value="{}" placeholder="Введите данные пользователя">
     <button onclick="addUser()">Добавить</button>
     <pre id="addUserResult"></pre>
+</div>
+
+<div>
+    <h4>3) Получить список пользователей</h4>
+    <button onclick="getAllUsers()">Получить</button>
+    <pre id="allUsersResult"></pre>
 </div>
 </body>
 </html>
