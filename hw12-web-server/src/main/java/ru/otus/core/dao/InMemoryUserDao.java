@@ -45,7 +45,12 @@ public class InMemoryUserDao implements UserDao {
         return null;
     }
 
-//    @Override
+    @Override
+    public List<Long> getAllIds() {
+        return null;
+    }
+
+    //    @Override
 //    public Optional<User> findRandomUser() {
 //        Random r = new Random();
 //        return users.values().stream().skip(r.nextInt(users.size() - 1)).findFirst();

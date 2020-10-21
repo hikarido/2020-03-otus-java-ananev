@@ -10,6 +10,8 @@ import ru.otus.core.sessionmanager.SessionManager;
 import ru.otus.hibernate.sessionmanager.DatabaseSessionHibernate;
 import ru.otus.hibernate.sessionmanager.SessionManagerHibernate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class UserDaoHibernate implements UserDao {
@@ -73,6 +75,19 @@ public class UserDaoHibernate implements UserDao {
             logger.error(e.getMessage(), e);
             throw new UserDaoException(e);
         }
+    }
+
+    @Override
+    public List<Long> getAllIds(){
+        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+        try {
+            List<Long> result = currentSession.getHibernateSession().createQuery(
+                    "SELECT id FROM User").getResultList();
+            return result;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return new ArrayList<>();
     }
 
     @Override

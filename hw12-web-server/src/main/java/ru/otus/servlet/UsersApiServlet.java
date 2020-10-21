@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
+import ru.otus.core.sessionmanager.DatabaseSession;
 import ru.otus.hibernate.sessionmanager.DatabaseSessionHibernate;
 
 
@@ -93,12 +94,11 @@ public class UsersApiServlet extends HttpServlet {
         }
         else if(doesItAboutGetAllUsers(request)){
             userDao.getSessionManager().beginSession();
-            DatabaseSessionHibernate session = (DatabaseSessionHibernate)
-                    userDao.getSessionManager().getCurrentSession();
-            List<User> users = session.getHibernateSession().createQuery(
-                    "SELECT User FROM User").getResultList();
-            System.out.println(users);
+            List<Long> ids = userDao.getAllIds();
             userDao.getSessionManager().close();
+            response.setContentType("application/json;charset=UTF-8");
+            ServletOutputStream out = response.getOutputStream();
+            out.print("{\"test\": \"1\"}");
             return;
         }
 
