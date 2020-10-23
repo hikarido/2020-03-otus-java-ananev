@@ -51,7 +51,13 @@
                 .then(
                 response => response.json()
                 )
-                .then(users => allUsersResult.innerHTML = JSON.stringify(users));
+                .then(response => {
+                    resStr = "";
+                    for(key in response){
+                        resStr += "\n" + String(key) + ":" + JSON.stringify(response[key]);
+                    }
+                    allUsersResult.innerHTML = resStr;
+                });
         }
     </script>
 </head>
@@ -69,6 +75,13 @@
 
 <div>
     <h4>2) Добавить пользователя</h4>
+    <p>
+    Примеры <br>
+    {"name": "hero", "address": {"street":"123"}, "phones": [{"number": 123}]} <br>
+    {"name": "master", "address": {"street":"Home line"}, "phones": []} <br>
+    {"name": "бомж с телефоном" , "phones": [{"number": 92498437}]} <br>
+    {"name": "не бомж", "address": {"street":"Первая улица первый дом"}, "phones": [{"number":  123}, {"number": 3125}]} <br>
+    </p>
     <h5>Введите данные пользователя в формате json</h5>
     <input type="text" id="newUserInput" value="{}" placeholder="Введите данные пользователя">
     <button onclick="addUser()">Добавить</button>
