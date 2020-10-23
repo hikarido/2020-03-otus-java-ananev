@@ -19,10 +19,10 @@ public class User {
     @OneToMany(
             mappedBy = "owner",
             cascade = javax.persistence.CascadeType.ALL,
-            orphanRemoval = true, fetch = FetchType.LAZY)
+            orphanRemoval = true, fetch = FetchType.EAGER)
     private List<PhoneDataSet> phones;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "addressdataset_id")
     private AddressDataSet address;
 
