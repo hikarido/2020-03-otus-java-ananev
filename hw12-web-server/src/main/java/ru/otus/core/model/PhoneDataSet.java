@@ -12,7 +12,7 @@ public class PhoneDataSet {
     private String number;
 
     @ManyToOne
-    private User owner;
+    private transient User owner;
 
     @Id
     @Column(name = "id")
