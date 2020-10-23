@@ -12,11 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
-import ru.otus.core.sessionmanager.DatabaseSession;
-import ru.otus.hibernate.sessionmanager.DatabaseSessionHibernate;
 
 
 public class UsersApiServlet extends HttpServlet {
@@ -54,7 +53,7 @@ public class UsersApiServlet extends HttpServlet {
 
         userDao.getSessionManager().beginSession();
         final long newId = userDao.insertUser(user);
-        userDao.getSessionManager().close();
+        userDao.getSessionManager().commitSession();
 
         resp.setContentType("application/json;charset=UTF-8");
         resp.setStatus(200);
@@ -76,7 +75,7 @@ public class UsersApiServlet extends HttpServlet {
             final long id = extractIdFromRequest(request);
             userDao.getSessionManager().beginSession();
             final User user = userDao.findById(id).orElse(null);
-            userDao.getSessionManager().close();
+            userDao.getSessionManager().commitSession();
 
             response.setContentType("application/json;charset=UTF-8");
             ServletOutputStream out = response.getOutputStream();
@@ -87,7 +86,7 @@ public class UsersApiServlet extends HttpServlet {
 
             }
 
-            final String json = gson.toJson(user);
+            final String json = gson.toJson(user, User.class);
             logger.debug("User was requested: " + json);
             out.print(json);
             return;
@@ -95,10 +94,17 @@ public class UsersApiServlet extends HttpServlet {
         else if(doesItAboutGetAllUsers(request)){
             userDao.getSessionManager().beginSession();
             List<Long> ids = userDao.getAllIds();
-            userDao.getSessionManager().close();
+            List<User> users = new ArrayList<>(ids.size());
+            for(Long id: ids){
+                User user = userDao.findById(id).orElse(null);
+                users.add(user);
+            }
+            final String json = gson.toJson(users);
+
+            userDao.getSessionManager().commitSession();
             response.setContentType("application/json;charset=UTF-8");
             ServletOutputStream out = response.getOutputStream();
-            out.print("{\"test\": \"1\"}");
+            out.print(json);
             return;
         }
 
@@ -129,7 +135,7 @@ public class UsersApiServlet extends HttpServlet {
         String[] path = request.getPathInfo().split("/");
         if(path.length > 1){
             try{
-                long id = Long.parseLong(path[ID_PATH_PARAM_POSITION]);
+                Long.parseLong(path[ID_PATH_PARAM_POSITION]);
             }
             catch (NumberFormatException e){
                 return false;
