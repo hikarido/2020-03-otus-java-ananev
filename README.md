@@ -3,7 +3,6 @@
 ---
 * Student: Ananev Konstantin
 * Group: java-2020-06
-
 ---
 # Content
 * [HW 01](./hw01-gradle) - create gradle repo with submodules (Build lesson)
