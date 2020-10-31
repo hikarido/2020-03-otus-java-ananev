@@ -1,0 +1,97 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Пользователи</title>
+    <script>
+        function getUserById() {
+            const userIdTextBox = document.getElementById('userIdTextBox');
+            const userDataContainer = document.getElementById('userDataContainer');
+            const id = userIdTextBox.value;
+            fetch('api/user/' + id)
+                .then(
+                response => response.json()
+                )
+                .then(user => userDataContainer.innerHTML = JSON.stringify(user));
+        }
+
+       function addUser(){
+            const resultPlaceholder = document.getElementById('addUserResult');
+
+            const newUserInput = document.getElementById('newUserInput');
+            const rowUser = newUserInput.value;
+
+            try{
+                const user = JSON.parse(rowUser);
+                resultPlaceholder.innerHTML = "in progress";
+
+                fetch('api/user/',
+                {
+                    method: "post",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(user)
+                }
+                )
+                    .then(
+                    response => response.json()
+                    )
+                    .then(answer => resultPlaceholder.innerHTML = JSON.stringify(answer));
+            }
+            catch(e){
+                answer = JSON.stringify(e.message);
+                resultPlaceholder.innerHTML = answer;
+            }
+
+       }
+
+        function getAllUsers() {
+            const allUsersResult = document.getElementById('allUsersResult');
+            fetch('api/user/')
+                .then(
+                response => response.json()
+                )
+                .then(response => {
+                    resStr = "";
+                    for(key in response){
+                        resStr += "\n" + String(key) + ":" + JSON.stringify(response[key]);
+                    }
+                    allUsersResult.innerHTML = resStr;
+                });
+        }
+    </script>
+</head>
+
+<body>
+<div>
+    <h3>Страница администратора</h3>
+</div>
+<div>
+    <h4>1) Получить пользователя по id</h4>
+    <input type="text" id="userIdTextBox" value="3" placeholder="Введите id пользователя">
+    <button onclick="getUserById()">Получить</button>
+    <pre id="userDataContainer"></pre>
+</div>
+
+<div>
+    <h4>2) Добавить пользователя</h4>
+    <p>
+    Примеры <br>
+    {"name": "hero", "address": {"street":"123"}, "phones": [{"number": 123}]} <br>
+    {"name": "master", "address": {"street":"Home line"}, "phones": []} <br>
+    {"name": "бомж с телефоном" , "phones": [{"number": 92498437}]} <br>
+    {"name": "не бомж", "address": {"street":"Первая улица первый дом"}, "phones": [{"number":  123}, {"number": 3125}]} <br>
+    </p>
+    <h5>Введите данные пользователя в формате json</h5>
+    <input type="text" id="newUserInput" value="{}" placeholder="Введите данные пользователя">
+    <button onclick="addUser()">Добавить</button>
+    <pre id="addUserResult"></pre>
+</div>
+
+<div>
+    <h4>3) Получить список пользователей</h4>
+    <button onclick="getAllUsers()">Получить</button>
+    <pre id="allUsersResult"></pre>
+</div>
+</body>
+</html>

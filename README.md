@@ -2,8 +2,7 @@
 * [Course](https://otus.ru/lessons/razrabotchik-java/?int_source=courses_catalog&int_term=programming)
 ---
 * Student: Ananev Konstantin
-* Group: java-2020-6
-
+* Group: java-2020-06
 ---
 # Content
 * [HW 01](./hw01-gradle) - create gradle repo with submodules (Build lesson)
@@ -16,5 +15,6 @@
 * [HW 09](./hw09-custom-orm) - Using JDBC (Databases, ORM, JDBC, Multilayer architecture lesson)
 * [HW 10](./hw10-hibernate) - Hibernate ORM first look (Databases, ORM, Hibernate lesson)
 * [WH 11](./hw11-cache-engine) - Introduce cache to increase system performance (PlainRef, WeakRef, SoftRef, PhantomRef, GC and refs types, Apply cache lesson)
+* [HW 12](./hw12-web-server) - Web server, http, servlet, Jetty (Web server usage lesson)
 # Teachers repo
-[repo](https://github.com/petrelevich/otus_java_2020_03)
+[repo](https://github.com/petrelevich/otus_java_2020_06)
