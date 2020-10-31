@@ -2,7 +2,7 @@
 * [Course](https://otus.ru/lessons/razrabotchik-java/?int_source=courses_catalog&int_term=programming)
 ---
 * Student: Ananev Konstantin
-* Group: java-2020-3
+* Group: java-2020-06
 
 ---
 # Content
@@ -18,4 +18,4 @@
 * [WH 11](./hw11-cache-engine) - Introduce cache to increase system performance (PlainRef, WeakRef, SoftRef, PhantomRef, GC and refs types, Apply cache lesson)
 * [HW 12](./hw12-web-server) - Web server, http, servlet, Jetty (Web server usage lesson)
 # Teachers repo
-[repo](https://github.com/petrelevich/otus_java_2020_03)
+[repo](https://github.com/petrelevich/otus_java_2020_06)
