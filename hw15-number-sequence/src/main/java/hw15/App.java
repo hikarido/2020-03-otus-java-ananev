@@ -3,12 +3,27 @@
  */
 package hw15;
 
-public class App {
-    public String getGreeting() {
-        return "Hello world.";
-    }
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+public class App {
+    private static final Logger logger = LoggerFactory.getLogger(App.class.getName());
+
+    public static void main(String[] args) throws InterruptedException {
+
+        logger.info("Start");
+
+        NumberPrint task = new NumberPrint(6, 21);
+
+        Thread first = new Thread(() -> task.print(1));
+        Thread second = new Thread(() -> task.print(2));
+
+        first.start();
+        second.start();
+
+        first.join();
+        second.join();
+        logger.info("End");
     }
 }
+
