@@ -52,7 +52,6 @@ class NumberPrint {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException("Don't care");
         }
     }
 
@@ -60,6 +59,9 @@ class NumberPrint {
         logger.info("{} Count: {}, thread id {}", endToEndCounter, count, threadId);
         isFirstDone = true;
         notifyAll();
+        if(isTimeToEndJob()){
+            Thread.currentThread().interrupt();
+        }
         wait();
     }
 
@@ -78,10 +80,17 @@ class NumberPrint {
         endToEndCounter += 1;
 
         notifyAll();
+        if(isTimeToEndJob()){
+            Thread.currentThread().interrupt();
+        }
         wait();
     }
 
     private boolean isTimeToReverseSequence() {
         return count == 1 || count == sequenceLength;
+    }
+
+    private boolean isTimeToEndJob() {
+        return endToEndCounter == howManyTimesRepeat;
     }
 }
