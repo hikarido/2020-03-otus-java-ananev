@@ -6,6 +6,7 @@ import ru.otus.processor.LoggerProcessor;
 import ru.otus.processor.ProcessorConcatFields;
 import ru.otus.processor.ProcessorUpperField10;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Demo {
@@ -17,12 +18,15 @@ public class Demo {
         var listenerPrinter = new ListenerPrinter();
         complexProcessor.addListener(listenerPrinter);
 
+        ObjectForMessage obj = new ObjectForMessage();
+        obj.setData(Arrays.asList("field13", "inner", "data"));
         var message = new Message.Builder()
                 .field1("field1")
                 .field2("field2")
                 .field3("field3")
                 .field6("field6")
                 .field10("field10")
+                .field13(obj)
                 .build();
 
         var result = complexProcessor.handle(message);
