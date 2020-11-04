@@ -1,8 +1,7 @@
 package hw07;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import static  org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 import ru.otus.Message;
 import ru.otus.ObjectForMessage;
 import ru.otus.handler.ComplexProcessor;
@@ -12,6 +11,8 @@ import ru.otus.processor.homework.ProcessorSwapFields11And12;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class homeworkTest {
     @Test
