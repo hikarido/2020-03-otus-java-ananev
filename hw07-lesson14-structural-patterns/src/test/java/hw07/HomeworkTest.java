@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class homeworkTest {
+public class HomeworkTest {
     @Test
     @DisplayName("Testing of swapping of field 11 and field 12. TODO № 2")
     void swapFieldsTest() {
