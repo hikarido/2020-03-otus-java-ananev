@@ -14,10 +14,10 @@ include 'hw3-own-test-framework'
 //include 'hw04-different-gc-comparison' //commented out bacause it is experiment. It should be ran manually. 
 include 'hw05-auto-logging'
 include 'hw06-atm-single'
+include 'hw07-lesson14-structural-patterns'
 include 'hw08-json-object-writer'
 include 'hw09-custom-orm'
 include 'hw10-hibernate'
 include 'hw11-cache-engine'
 include 'hw12-web-server'
-
-include 'hw07-lesson14-structural-patterns'
+include 'hw15-number-sequence'

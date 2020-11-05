@@ -16,5 +16,6 @@
 * [HW 10](./hw10-hibernate) - Hibernate ORM first look (Databases, ORM, Hibernate lesson)
 * [WH 11](./hw11-cache-engine) - Introduce cache to increase system performance (PlainRef, WeakRef, SoftRef, PhantomRef, GC and refs types, Apply cache lesson)
 * [HW 12](./hw12-web-server) - Web server, http, servlet, Jetty (Web server usage lesson)
+* [HW 15](./hw15-number-sequence) - JMM, synchronized, concurrency, locks (Lesson about threads in java) 
 # Teachers repo
 [repo](https://github.com/petrelevich/otus_java_2020_06)
