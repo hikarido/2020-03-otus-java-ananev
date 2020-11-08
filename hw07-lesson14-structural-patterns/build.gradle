@@ -29,3 +29,10 @@ application {
     // Define the main class for the application.
     mainClassName = 'ru.otus.HomeWork'
 }
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}

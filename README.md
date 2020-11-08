@@ -11,6 +11,7 @@
 * [HW 04](./hw04-different-gc-comparison) - studying docs of garbage collectors and testing them on simple app. Make concluson about GC usage(GC lesson)
 * [HW 05](./hw05-auto-logging) - Make your class auto logable by magic proxy (AMS, AutoProxy, class loader lesson)
 * [HW 06](./hw06-atm-single) - Apply SOLID principles. Design your ATM emulator architecture (SOLID, Coupling, Cohesion lesson)
+* [HW 07](./hw07-lesson14-structural-patterns) - Study structural patterns. Don't be ashamed and do distinction between  Proxy and Decorator. (Apply patterns lesson)
 * [HW 08](./hw08-json-object-writer) - First look at json ecosystem (GSON, javax.json and custom toGson, serialization Lesson)
 * [HW 09](./hw09-custom-orm) - Using JDBC (Databases, ORM, JDBC, Multilayer architecture lesson)
 * [HW 10](./hw10-hibernate) - Hibernate ORM first look (Databases, ORM, Hibernate lesson)
